@@ -1,97 +1,135 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Dashboard</ion-title>
+    <ion-title>HabitLink</ion-title>
     <ion-buttons slot="end">
-      <ion-avatar slot="end">
-        <ion-img src="https://via.placeholder.com/40x40.png?text=J"></ion-img>
+      <ion-avatar>
+        <div style="width: 40px; height: 40px; background: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+          {{ displayName.charAt(0).toUpperCase() }}
+        </div>
       </ion-avatar>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-
-  <div class="ion-text-center" style="margin-top: 20px;">
-    <h3>Good Morning, {{ displayName }} 👋</h3>
-    <p style="color: #6c757d; font-size: 14px;">30 minutes of cardio • Daily</p>
+<ion-content class="ion-padding">  <!-- Greeting Section -->
+  <div class="ion-text-center" style="margin: 30px 0;">
+    <h2 style="margin: 0; font-weight: 700; color: var(--dark-gray);">
+      {{ greeting }}, {{ displayName }}!
+    </h2>
+    <p style="color: var(--medium-gray); margin: 8px 0 0 0;">Ready to build great habits today?</p>
   </div>
-
-  <!-- Streak Stats -->
-  <ion-grid>
+  <!-- Stats Grid -->
+  <ion-grid style="margin-bottom: 20px;">
     <ion-row>
-      <ion-col>
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>12</ion-card-title>
-            <ion-card-subtitle>Current Streak</ion-card-subtitle>
+      <ion-col size="6">
+        <ion-card class="stat-card">
+          <ion-card-header style="padding: 16px 12px;">
+            <ion-card-title>{{ stats.currentStreak }}</ion-card-title>
+            <ion-card-subtitle>Avg Current Streak</ion-card-subtitle>
           </ion-card-header>
         </ion-card>
       </ion-col>
-      <ion-col>
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>28</ion-card-title>
+      <ion-col size="6">
+        <ion-card class="stat-card">
+          <ion-card-header style="padding: 16px 12px;">
+            <ion-card-title>{{ stats.bestStreak }}</ion-card-title>
             <ion-card-subtitle>Best Streak</ion-card-subtitle>
           </ion-card-header>
         </ion-card>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>85%</ion-card-title>
+      <ion-col size="6">
+        <ion-card class="stat-card">
+          <ion-card-header style="padding: 16px 12px;">
+            <ion-card-title>{{ stats.successRate }}%</ion-card-title>
             <ion-card-subtitle>Success Rate</ion-card-subtitle>
           </ion-card-header>
         </ion-card>
       </ion-col>
-      <ion-col>
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>34</ion-card-title>
-            <ion-card-subtitle>Total Days</ion-card-subtitle>
+      <ion-col size="6">
+        <ion-card class="stat-card">
+          <ion-card-header style="padding: 16px 12px;">
+            <ion-card-title>{{ stats.totalDays }}</ion-card-title>
+            <ion-card-subtitle>Days Completed</ion-card-subtitle>
           </ion-card-header>
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <!-- Calendar placeholder -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>This Month</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <!-- Placeholder calendar grid -->
-      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">
-        <div *ngFor="let day of [].constructor(30); let i = index"
-             style="padding: 10px; text-align: center; border: 1px solid #e9ecef; border-radius: 4px;">
-          {{ i + 1 }}
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
+  <!-- Today's Habits -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+      <h3 style="margin: 0; color: var(--dark-gray);">Today's Habits</h3>
+      <ion-button size="small" fill="clear" routerLink="/habits">View All</ion-button>
+    </div>    <div *ngFor="let habit of todaysHabits">
+      <ion-card class="habit-card" [routerLink]="['/habit', habit.habit_id]">
+        <ion-card-content style="padding: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                <ion-badge class="streak-badge" style="margin-right: 12px;">
+                  {{ habit.streak }} days
+                </ion-badge>
+                <h3 class="habit-title">{{ habit.title }}</h3>
+              </div>
+              <p class="habit-subtitle">{{ habit.frequency | titlecase }} • {{ habit.description }}</p>
+            </div>
+            
+            <ion-button 
+              fill="clear" 
+              shape="round" 
+              size="large"
+              [disabled]="habit.completed"
+              (click)="markHabitComplete(habit); $event.stopPropagation()">
+              <ion-icon
+                slot="icon-only"
+                [name]="habit.completed ? 'checkmark-circle' : 'ellipse-outline'"
+                [color]="habit.completed ? 'success' : 'medium'"
+                style="font-size: 28px;">
+              </ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
 
-  <ion-button expand="block" style="margin-top: 20px;">Mark as Complete Today</ion-button>
+  <!-- Quick Actions -->
+  <div style="margin-top: 30px;">
+    <ion-button expand="block" color="primary" routerLink="/create-habit" style="border-radius: 12px; height: 48px; font-weight: 600;">
+      + Add New Habit
+    </ion-button>
+  </div>
 
 </ion-content>
 
 <!-- Tab Bar -->
 <ion-footer>
-  <ion-toolbar>
-    <ion-segment value="dashboard">
-      <ion-segment-button value="dashboard">
-        <ion-label>Dashboard</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="habits" (click)="navigate('/habits')">
-        <ion-label>Habits</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="journal" (click)="navigate('/journal')">
-        <ion-label>Journal</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="profile" (click)="navigate('/profile')">
-        <ion-label>Profile</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+  <ion-toolbar style="--background: #f8f9fa;">
+    <div style="display: flex; width: 100%; justify-content: space-around; align-items: center; padding: 8px 0;">
+      
+      <div class="tab-item active" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;">
+        <ion-icon name="home" style="font-size: 24px; color: var(--primary-blue);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--primary-blue); font-weight: 600;">Dashboard</span>
+      </div>
+      
+      <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigate('/habits')">
+        <ion-icon name="list" style="font-size: 24px; color: var(--medium-gray);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--medium-gray);">Habits</span>
+      </div>
+      
+      <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigate('/journal')">
+        <ion-icon name="book" style="font-size: 24px; color: var(--medium-gray);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--medium-gray);">Journal</span>
+      </div>
+      
+      <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigate('/profile')">
+        <ion-icon name="person" style="font-size: 24px; color: var(--medium-gray);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--medium-gray);">Profile</span>
+      </div>
+      
+    </div>
   </ion-toolbar>
 </ion-footer>

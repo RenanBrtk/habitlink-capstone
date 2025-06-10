@@ -6,45 +6,87 @@
 
 <ion-content class="ion-padding">
 
-  <div class="ion-text-end" style="margin-bottom: 12px;">
-    <ion-button size="small" routerLink="/all-habits">View All</ion-button>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h3 style="margin: 0; color: var(--dark-gray);">Your Habits</h3>
+    <ion-button size="small" fill="outline" routerLink="/all-habits">View All</ion-button>
   </div>
 
-  <h3>Your Habits</h3>
-
-  <ion-list lines="none">
-    <ion-card *ngFor="let habit of habits" class="habit-card" style="margin-bottom: 12px;">
-      <ion-item>
-        <!-- Streak badge -->
-        <ion-badge color="primary" slot="start" style="margin-right: 12px; border-radius: 12px; font-size: 12px;">
-          {{ habit.streak }} days
-        </ion-badge>
-
-        <!-- Habit Info -->
-        <ion-label>
-          <h2 style="margin: 0; font-weight: 600;">{{ habit.title }}</h2>
-          <p style="margin: 0; color: gray; font-size: 14px;">
-            {{ habit.frequency | titlecase }} • {{ habit.description }}
-          </p>
-        </ion-label>
-
-        <!-- Completion icon button -->
-        <ion-button fill="clear" slot="end" shape="round" size="small" (click)="markTodayComplete(habit)">
-          <ion-icon
-            slot="icon-only"
-            [name]="habit.completedToday ? 'checkmark-circle' : 'ellipse-outline'"
-            [color]="habit.completedToday ? 'success' : 'medium'">
-          </ion-icon>
-        </ion-button>
-      </ion-item>
+  <div *ngFor="let habit of habits">
+    <ion-card class="habit-card" [routerLink]="['/habit', habit.habit_id]">
+      <ion-card-content style="padding: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="flex: 1;">
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+              <ion-badge class="streak-badge" style="margin-right: 12px;">
+                {{ habit.streak }} days
+              </ion-badge>
+              <h3 class="habit-title">{{ habit.title }}</h3>
+            </div>
+            <p class="habit-subtitle">
+              {{ habit.frequency | titlecase }} • {{ habit.description }}
+            </p>
+          </div>
+          
+          <ion-button 
+            fill="clear" 
+            shape="round" 
+            size="large"
+            [disabled]="habit.completedToday"
+            (click)="markTodayComplete(habit); $event.stopPropagation();">
+            <ion-icon
+              slot="icon-only"
+              [name]="habit.completedToday ? 'checkmark-circle' : 'ellipse-outline'"
+              [color]="habit.completedToday ? 'success' : 'medium'"
+              style="font-size: 28px;">
+            </ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
     </ion-card>
-  </ion-list>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="habits.length === 0" style="text-align: center; margin-top: 60px; color: var(--medium-gray);">
+    <ion-icon name="list-outline" style="font-size: 64px; margin-bottom: 16px;"></ion-icon>
+    <h3>No habits yet</h3>
+    <p>Create your first habit to get started!</p>
+    <ion-button routerLink="/create-habit" style="margin-top: 20px;">Create Habit</ion-button>
+  </div>
 
   <!-- FAB to create habit -->
-  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 80px;">
     <ion-fab-button color="primary" routerLink="/create-habit">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
 </ion-content>
+
+<!-- Tab Bar -->
+<ion-footer>
+  <ion-toolbar style="--background: #f8f9fa;">
+    <div style="display: flex; width: 100%; justify-content: space-around; align-items: center; padding: 8px 0;">
+      
+      <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigate('/dashboard')">
+        <ion-icon name="home" style="font-size: 24px; color: var(--medium-gray);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--medium-gray);">Dashboard</span>
+      </div>
+      
+      <div class="tab-item active" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;">
+        <ion-icon name="list" style="font-size: 24px; color: var(--primary-blue);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--primary-blue); font-weight: 600;">Habits</span>
+      </div>
+      
+      <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigate('/journal')">
+        <ion-icon name="book" style="font-size: 24px; color: var(--medium-gray);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--medium-gray);">Journal</span>
+      </div>
+      
+      <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigate('/profile')">
+        <ion-icon name="person" style="font-size: 24px; color: var(--medium-gray);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--medium-gray);">Profile</span>
+      </div>
+      
+    </div>
+  </ion-toolbar>
+</ion-footer>

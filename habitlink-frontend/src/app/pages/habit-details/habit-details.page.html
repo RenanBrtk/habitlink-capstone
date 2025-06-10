@@ -9,56 +9,99 @@
 
 <ion-content class="ion-padding">
 
-  <div class="ion-text-center" style="margin-bottom: 20px;">
-    <h3>Habit Progress</h3>
-    <p style="color: #6c757d;">
+  <!-- Habit Info Section -->
+  <div style="text-align: center; margin: 30px 0;">
+    <h2 style="margin: 0 0 8px 0; font-weight: 700; color: var(--dark-gray);">
+      {{ habit.title }}
+    </h2>
+    <p style="color: var(--medium-gray); margin: 0;">
       {{ habit.frequency | titlecase }} • {{ habit.frequency_value }} time(s)
     </p>
+    <p *ngIf="habit.description" style="color: var(--medium-gray); margin: 12px 0 0 0; font-style: italic;">
+      "{{ habit.description }}"
+    </p>
   </div>
-
   <!-- Streak Stats -->
-  <ion-grid>
+  <ion-grid style="margin-bottom: 24px;">
     <ion-row>
-      <ion-col>
-        <ion-card>
-          <ion-card-header>
+      <ion-col size="4">
+        <ion-card class="stat-card">
+          <ion-card-header style="padding: 16px 12px;">
             <ion-card-title>{{ progress.streak?.current_streak || 0 }}</ion-card-title>
             <ion-card-subtitle>Current Streak</ion-card-subtitle>
           </ion-card-header>
         </ion-card>
       </ion-col>
-      <ion-col>
-        <ion-card>
-          <ion-card-header>
+      <ion-col size="4">
+        <ion-card class="stat-card">
+          <ion-card-header style="padding: 16px 12px;">
             <ion-card-title>{{ progress.streak?.longest_streak || 0 }}</ion-card-title>
             <ion-card-subtitle>Longest Streak</ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+      <ion-col size="4">
+        <ion-card class="stat-card">
+          <ion-card-header style="padding: 16px 12px;">
+            <ion-card-title>{{ completionRate }}%</ion-card-title>
+            <ion-card-subtitle>Completion Rate</ion-card-subtitle>
           </ion-card-header>
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <ion-button expand="block" color="success" (click)="markComplete()">
-  ✔️ Mark Today as Complete
-</ion-button>
-
+  <!-- Mark Complete Button -->
+  <ion-button 
+    expand="block" 
+    color="success" 
+    (click)="markComplete()"
+    style="border-radius: 12px; height: 48px; font-weight: 600; margin-bottom: 24px;">
+    <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+    Mark Today as Complete
+  </ion-button>
 
   <!-- Recent Activity -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Recent Activity (last 30 days)</ion-card-title>
+  <ion-card style="border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+    <ion-card-header style="padding: 20px 20px 16px;">
+      <ion-card-title style="font-size: 18px; color: var(--dark-gray);">
+        Recent Activity
+      </ion-card-title>
+      <ion-card-subtitle style="color: var(--medium-gray);">
+        Last 30 days
+      </ion-card-subtitle>
     </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item *ngFor="let log of progress.logs">
-          <ion-label>
-            {{ log.log_date }} - 
-            <strong [style.color]="log.completed ? 'green' : 'red'">
+    <ion-card-content style="padding: 0 20px 20px;">
+      
+      <div *ngIf="progress.logs && progress.logs.length > 0; else noLogs">
+        <div 
+          *ngFor="let log of progress.logs.slice(0, 10)" 
+          style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f3f4;">
+          
+          <div>
+            <p style="margin: 0; font-weight: 500; color: var(--dark-gray);">
+              {{ log.log_date | date:'MMM d, y' }}
+            </p>
+          </div>
+          
+          <div style="display: flex; align-items: center;">
+            <ion-badge 
+              [color]="log.completed ? 'success' : 'danger'"
+              style="border-radius: 12px; font-size: 11px; font-weight: 600;">
               {{ log.completed ? 'Completed' : 'Missed' }}
-            </strong>
-          </ion-label>
-        </ion-item>
-      </ion-list>
+            </ion-badge>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noLogs>
+        <div style="text-align: center; padding: 40px 0; color: var(--medium-gray);">
+          <ion-icon name="calendar-outline" style="font-size: 48px; margin-bottom: 16px;"></ion-icon>
+          <p>No activity yet</p>
+          <p style="font-size: 14px;">Complete your first habit to see progress here!</p>
+        </div>
+      </ng-template>
+
     </ion-card-content>
   </ion-card>
 

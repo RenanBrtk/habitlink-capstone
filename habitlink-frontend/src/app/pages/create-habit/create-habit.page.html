@@ -9,39 +9,82 @@
 
 <ion-content class="ion-padding">
 
-  <ion-item>
-    <ion-label position="floating">Habit Name</ion-label>
-    <ion-input [(ngModel)]="title" type="text"></ion-input>
-  </ion-item>
+  <!-- Form Card -->
+  <ion-card style="border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); margin-top: 20px;">
+    <ion-card-content style="padding: 24px;">
 
-  <ion-item>
-    <ion-label position="floating">Description</ion-label>
-    <ion-textarea [(ngModel)]="description"></ion-textarea>
-  </ion-item>
+      <ion-item lines="none" style="margin-bottom: 16px; --padding-start: 0;">
+        <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--dark-gray);">
+          Habit Name
+        </ion-label>
+        <ion-input 
+          [(ngModel)]="title" 
+          type="text" 
+          placeholder="e.g., Morning Exercise"
+          style="border: 2px solid #e9ecef; border-radius: 12px; padding: 12px 16px; background: #fff;">
+        </ion-input>
+      </ion-item>
 
-  <ion-item>
-    <ion-label>Frequency</ion-label>
-    <ion-select [(ngModel)]="frequency">
-      <ion-select-option value="daily">Daily</ion-select-option>
-      <ion-select-option value="weekly">Weekly</ion-select-option>
-      <ion-select-option value="monthly">Monthly</ion-select-option>
-      <ion-select-option value="custom">Custom</ion-select-option>
-    </ion-select>
-  </ion-item>
+      <ion-item lines="none" style="margin-bottom: 16px; --padding-start: 0;">
+        <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--dark-gray);">
+          Description
+        </ion-label>
+        <ion-textarea 
+          [(ngModel)]="description" 
+          placeholder="Describe your habit..."
+          rows="3"
+          style="border: 2px solid #e9ecef; border-radius: 12px; padding: 12px 16px; background: #fff;">
+        </ion-textarea>
+      </ion-item>
 
-  <ion-item>
-    <ion-label position="floating">Target Time</ion-label>
-    <ion-datetime-button datetime="targetTime"></ion-datetime-button>
-    <ion-modal keepContentsMounted="true">
-      <ion-datetime id="targetTime" presentation="time" [(ngModel)]="target_time"></ion-datetime>
-    </ion-modal>
-  </ion-item>
+      <ion-item lines="none" style="margin-bottom: 16px; --padding-start: 0;">
+        <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--dark-gray);">
+          Frequency
+        </ion-label>
+        <ion-select 
+          [(ngModel)]="frequency"
+          interface="popover"
+          style="border: 2px solid #e9ecef; border-radius: 12px; padding: 12px 16px; background: #fff;">
+          <ion-select-option value="daily">Daily</ion-select-option>
+          <ion-select-option value="weekly">Weekly</ion-select-option>
+          <ion-select-option value="monthly">Monthly</ion-select-option>
+          <ion-select-option value="custom">Custom</ion-select-option>
+        </ion-select>
+      </ion-item>
 
-  <ion-item>
-    <ion-label position="floating">Start Date</ion-label>
-    <ion-datetime display-format="YYYY-MM-DD" [(ngModel)]="start_date"></ion-datetime>
-  </ion-item>
+      <ion-item lines="none" style="margin-bottom: 16px; --padding-start: 0;">
+        <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--dark-gray);">
+          Target Time
+        </ion-label>
+        <ion-datetime-button 
+          datetime="targetTime"
+          style="border: 2px solid #e9ecef; border-radius: 12px; padding: 12px 16px; background: #fff; width: 100%;">
+        </ion-datetime-button>
+        <ion-modal keepContentsMounted="true">
+          <ion-datetime id="targetTime" presentation="time" [(ngModel)]="target_time"></ion-datetime>
+        </ion-modal>
+      </ion-item>
 
-  <ion-button expand="block" style="margin-top: 20px;" (click)="createHabit()">Create Habit</ion-button>
+      <ion-item lines="none" style="margin-bottom: 24px; --padding-start: 0;">
+        <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--dark-gray);">
+          Start Date
+        </ion-label>
+        <ion-datetime 
+          display-format="YYYY-MM-DD" 
+          [(ngModel)]="start_date"
+          presentation="date"
+          style="border: 2px solid #e9ecef; border-radius: 12px; padding: 12px 16px; background: #fff;">
+        </ion-datetime>
+      </ion-item>
+
+      <ion-button 
+        expand="block" 
+        (click)="createHabit()"
+        style="border-radius: 12px; height: 48px; font-weight: 600; margin-top: 20px;">
+        Create Habit
+      </ion-button>
+
+    </ion-card-content>
+  </ion-card>
 
 </ion-content>

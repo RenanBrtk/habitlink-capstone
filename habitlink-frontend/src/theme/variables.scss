@@ -1,2 +1,22 @@
 // For information on how to create your own theme, please see:
 // http://ionicframework.com/docs/theming/
+
+// HabitLink Color System (matching mockup)
+:root {
+  --primary-blue: #007AFF;
+  --success-green: #28a745;
+  --warning-yellow: #ffc107;
+  --accent-purple: #6f42c1;
+  --danger-red: #dc3545;
+  --light-gray: #f8f9fa;
+  --medium-gray: #6c757d;
+  --dark-gray: #495057;
+  
+  // Override Ionic colors
+  --ion-color-primary: #007AFF;
+  --ion-color-primary-rgb: 0, 122, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #0056b3;
+  --ion-color-primary-tint: #1a86ff;
+}

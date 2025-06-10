@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 
@@ -17,7 +17,7 @@ export class AllHabitsPage implements OnInit {
   habits: any[] = [];
   filter: string = 'all';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
     this.loadHabits();
@@ -38,9 +38,12 @@ export class AllHabitsPage implements OnInit {
       }
     });
   }
-
   filteredHabits() {
     if (this.filter === 'all') return this.habits;
     return this.habits.filter(habit => habit.frequency === this.filter);
+  }
+
+  navigateTo(route: string) {
+    this.router.navigate([route]);
   }
 }

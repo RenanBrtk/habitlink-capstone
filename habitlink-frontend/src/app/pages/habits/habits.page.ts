@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-habits',
@@ -11,7 +12,8 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     IonicModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ],
   templateUrl: './habits.page.html',
   styleUrls: ['./habits.page.scss'],
@@ -19,7 +21,7 @@ import { RouterModule } from '@angular/router';
 export class HabitsPage implements OnInit {
   habits: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
     this.loadHabits();
@@ -69,5 +71,9 @@ export class HabitsPage implements OnInit {
       next: () => this.loadHabits(), // Refresh state
       error: (err) => console.error('Complete error:', err)
     });
+  }
+
+  navigate(path: string) {
+    this.router.navigate([path]);
   }
 }

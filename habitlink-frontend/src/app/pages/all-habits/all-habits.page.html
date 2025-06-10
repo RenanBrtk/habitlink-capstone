@@ -8,40 +8,97 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
-  <div class="ion-text-center" style="margin-bottom: 15px;">
-    <ion-segment [(ngModel)]="filter">
-      <ion-segment-button value="all">
-        <ion-label>All</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="daily">
-        <ion-label>Daily</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="weekly">
-        <ion-label>Weekly</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="monthly">
-        <ion-label>Monthly</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+  <!-- Filter Buttons -->
+  <div style="margin-bottom: 20px; display: flex; gap: 8px; justify-content: center;">
+    <button 
+      [style.background]="filter === 'all' ? 'var(--primary-blue)' : 'var(--light-gray)'"
+      [style.color]="filter === 'all' ? 'white' : 'var(--dark-gray)'"
+      style="border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;"
+      (click)="filter = 'all'">
+      All
+    </button>
+    <button 
+      [style.background]="filter === 'daily' ? 'var(--primary-blue)' : 'var(--light-gray)'"
+      [style.color]="filter === 'daily' ? 'white' : 'var(--dark-gray)'"
+      style="border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;"
+      (click)="filter = 'daily'">
+      Daily
+    </button>
+    <button 
+      [style.background]="filter === 'weekly' ? 'var(--primary-blue)' : 'var(--light-gray)'"
+      [style.color]="filter === 'weekly' ? 'white' : 'var(--dark-gray)'"
+      style="border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;"
+      (click)="filter = 'weekly'">
+      Weekly
+    </button>
+    <button 
+      [style.background]="filter === 'monthly' ? 'var(--primary-blue)' : 'var(--light-gray)'"
+      [style.color]="filter === 'monthly' ? 'white' : 'var(--dark-gray)'"
+      style="border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;"
+      (click)="filter = 'monthly'">
+      Monthly
+    </button>
   </div>
 
   <!-- Habit Cards -->
-  <ion-card *ngFor="let habit of filteredHabits()" [routerLink]="['/habit', habit.habit_id]">
-    <ion-card-header>
-      <ion-card-title>{{ habit.title }}</ion-card-title>
-      <ion-card-subtitle>{{ habit.frequency | titlecase }} • {{ habit.frequency_value }} time(s)</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>4
-      {{ habit.description }}
-    </ion-card-content>
-  </ion-card>
+  <div *ngFor="let habit of filteredHabits()">
+    <ion-card class="habit-card" [routerLink]="['/habit', habit.habit_id]">
+      <ion-card-content style="padding: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div style="flex: 1;">
+            <h3 class="habit-title" style="margin-bottom: 4px;">{{ habit.title }}</h3>
+            <p class="habit-subtitle" style="margin-bottom: 8px;">
+              {{ habit.frequency | titlecase }} • {{ habit.frequency_value }} time(s)
+            </p>
+            <p style="margin: 0; color: var(--medium-gray); font-size: 14px; line-height: 1.4;">
+              {{ habit.description }}
+            </p>
+          </div>
+          
+          <div style="margin-left: 12px;">
+            <ion-icon 
+              name="chevron-forward" 
+              style="color: var(--medium-gray); font-size: 20px;">
+            </ion-icon>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredHabits().length === 0" style="text-align: center; margin-top: 60px; color: var(--medium-gray);">
+    <ion-icon name="search-outline" style="font-size: 64px; margin-bottom: 16px;"></ion-icon>
+    <h3>No habits found</h3>
+    <p *ngIf="filter !== 'all'">Try changing your filter or create a new {{ filter }} habit.</p>
+    <p *ngIf="filter === 'all'">Create your first habit to get started!</p>
+  </div>
 
 </ion-content>
 
 <!-- Floating Action Button -->
-<ion-fab vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button routerLink="/create-habit">
+<ion-fab vertical="bottom" horizontal="end" slot="fixed" style="margin-bottom: 80px;">
+  <ion-fab-button routerLink="/create-habit" color="primary">
     <ion-icon name="add-outline"></ion-icon>
   </ion-fab-button>
 </ion-fab>
+
+<!-- Custom Tab Bar -->
+<div class="custom-tab-bar">
+  <div class="tab-item" (click)="navigateTo('/dashboard')">
+    <ion-icon name="home"></ion-icon>
+    <span>Dashboard</span>
+  </div>
+  <div class="tab-item active">
+    <ion-icon name="list" style="color: var(--primary-blue);"></ion-icon>
+    <span style="color: var(--primary-blue); font-weight: 600;">Habits</span>
+  </div>
+  <div class="tab-item" (click)="navigateTo('/journal')">
+    <ion-icon name="book"></ion-icon>
+    <span>Journal</span>
+  </div>
+  <div class="tab-item" (click)="navigateTo('/profile')">
+    <ion-icon name="person"></ion-icon>
+    <span>Profile</span>
+  </div>
+</div>

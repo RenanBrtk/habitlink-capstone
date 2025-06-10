@@ -21,6 +21,7 @@ export class HabitDetailsPage implements OnInit {
   habit: any = {};
   progress: any = {};
   habitId: string = '';
+  completionRate: number = 0;
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
@@ -45,7 +46,6 @@ export class HabitDetailsPage implements OnInit {
       }
     });
   }
-
   loadProgress() {
     const token = localStorage.getItem('token');
     this.http.get<any>(`http://localhost:3000/api/habits/${this.habitId}/progress`, {
@@ -55,6 +55,7 @@ export class HabitDetailsPage implements OnInit {
     }).subscribe({
       next: (res) => {
         this.progress = res;
+        this.calculateCompletionRate();
       },
       error: (err) => {
         console.error('Error loading progress:', err);
@@ -62,6 +63,15 @@ export class HabitDetailsPage implements OnInit {
     });
   }
 
+  calculateCompletionRate() {
+    if (this.progress.logs && this.progress.logs.length > 0) {
+      const totalLogs = this.progress.logs.length;
+      const completedLogs = this.progress.logs.filter((log: any) => log.completed).length;
+      this.completionRate = Math.round((completedLogs / totalLogs) * 100);
+    } else {
+      this.completionRate = 0;
+    }
+  }
   markComplete() {
   const token = localStorage.getItem('token');
   this.http.post(`http://localhost:3000/api/habits/${this.habitId}/complete`, {}, {

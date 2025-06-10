@@ -4,7 +4,20 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { addIcons } from 'ionicons';
-import { checkmarkCircle, ellipseOutline, addOutline, add } from 'ionicons/icons';
+import { 
+  checkmarkCircle, 
+  ellipseOutline, 
+  addOutline, 
+  add, 
+  home, 
+  list, 
+  book, 
+  person,
+  chevronForward,
+  searchOutline,
+  listOutline,
+  calendarOutline
+} from 'ionicons/icons';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -19,5 +32,13 @@ addIcons({
   'ellipse-outline': ellipseOutline,
   'add-outline': addOutline,
   'add': add,
+  'home': home,
+  'list': list,
+  'book': book,
+  'person': person,
+  'chevron-forward': chevronForward,
+  'search-outline': searchOutline,
+  'list-outline': listOutline,
+  'calendar-outline': calendarOutline
 });
 
