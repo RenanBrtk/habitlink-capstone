@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/all-habits"></ion-back-button>
+    </ion-buttons>
+    <ion-title>New Habit</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-item>
+    <ion-label position="floating">Habit Name</ion-label>
+    <ion-input [(ngModel)]="title" type="text"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Description</ion-label>
+    <ion-textarea [(ngModel)]="description"></ion-textarea>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Frequency</ion-label>
+    <ion-select [(ngModel)]="frequency">
+      <ion-select-option value="daily">Daily</ion-select-option>
+      <ion-select-option value="weekly">Weekly</ion-select-option>
+      <ion-select-option value="monthly">Monthly</ion-select-option>
+      <ion-select-option value="custom">Custom</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Target Time</ion-label>
+    <ion-datetime-button datetime="targetTime"></ion-datetime-button>
+    <ion-modal keepContentsMounted="true">
+      <ion-datetime id="targetTime" presentation="time" [(ngModel)]="target_time"></ion-datetime>
+    </ion-modal>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Start Date</ion-label>
+    <ion-datetime display-format="YYYY-MM-DD" [(ngModel)]="start_date"></ion-datetime>
+  </ion-item>
+
+  <ion-button expand="block" style="margin-top: 20px;" (click)="createHabit()">Create Habit</ion-button>
+
+</ion-content>

@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/habits"></ion-back-button>
+    </ion-buttons>
+    <ion-title>All Habits</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="ion-text-center" style="margin-bottom: 15px;">
+    <ion-segment [(ngModel)]="filter">
+      <ion-segment-button value="all">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="daily">
+        <ion-label>Daily</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="weekly">
+        <ion-label>Weekly</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="monthly">
+        <ion-label>Monthly</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Habit Cards -->
+  <ion-card *ngFor="let habit of filteredHabits()" [routerLink]="['/habit', habit.habit_id]">
+    <ion-card-header>
+      <ion-card-title>{{ habit.title }}</ion-card-title>
+      <ion-card-subtitle>{{ habit.frequency | titlecase }} • {{ habit.frequency_value }} time(s)</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>4
+      {{ habit.description }}
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<!-- Floating Action Button -->
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button routerLink="/create-habit">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

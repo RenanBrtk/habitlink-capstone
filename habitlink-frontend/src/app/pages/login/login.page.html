@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>HabitLink</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="ion-text-center" style="margin-top: 20px;">
+    <div style="
+      width: 80px;
+      height: 80px;
+      background: #007AFF;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 36px;">
+      🎯
+    </div>
+
+    <h2>Welcome Back!</h2>
+    <p style="color: #6c757d;">Track your habits, build your future</p>
+  </div>
+
+  <ion-item>
+    <ion-label position="floating">Email</ion-label>
+    <ion-input [(ngModel)]="email" type="email"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Password</ion-label>
+    <ion-input [(ngModel)]="password" type="password"></ion-input>
+  </ion-item>
+
+  <ion-button expand="block" style="margin-top: 20px;" (click)="login()">Sign In</ion-button>
+
+  <div class="ion-text-center" style="margin-top: 10px;">
+    <ion-button fill="clear" size="small">Forgot Password?</ion-button>
+  </div>
+
+  <div class="ion-text-center" style="margin-top: 20px; color: #6c757d;">
+    Don't have an account?
+    <ion-button fill="clear" size="small" [routerLink]="['/register']">Sign Up</ion-button>
+  </div>
+
+  <p *ngIf="error" style="color:red; margin-top: 15px; text-align: center;">{{ error }}</p>
+
+</ion-content>

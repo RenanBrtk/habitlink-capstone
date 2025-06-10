@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/all-habits"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ habit.title || 'Habit Details' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="ion-text-center" style="margin-bottom: 20px;">
+    <h3>Habit Progress</h3>
+    <p style="color: #6c757d;">
+      {{ habit.frequency | titlecase }} • {{ habit.frequency_value }} time(s)
+    </p>
+  </div>
+
+  <!-- Streak Stats -->
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ progress.streak?.current_streak || 0 }}</ion-card-title>
+            <ion-card-subtitle>Current Streak</ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ progress.streak?.longest_streak || 0 }}</ion-card-title>
+            <ion-card-subtitle>Longest Streak</ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-button expand="block" color="success" (click)="markComplete()">
+  ✔️ Mark Today as Complete
+</ion-button>
+
+
+  <!-- Recent Activity -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Recent Activity (last 30 days)</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let log of progress.logs">
+          <ion-label>
+            {{ log.log_date }} - 
+            <strong [style.color]="log.completed ? 'green' : 'red'">
+              {{ log.completed ? 'Completed' : 'Missed' }}
+            </strong>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

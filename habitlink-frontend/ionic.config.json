@@ -1,0 +1,7 @@
+{
+  "name": "habitlink-frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
