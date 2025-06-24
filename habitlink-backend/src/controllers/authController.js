@@ -44,16 +44,30 @@ exports.login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid email or password' });
-        }
-
-        // Generate JWT
+        }        // Generate JWT
         const token = jwt.sign(
             { user_id: user.user_id, email: user.email },
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
         );
 
-        res.json({ token, user: { user_id: user.user_id, email: user.email, display_name: user.display_name } });
+        // Update last login
+        await user.update({ last_login: new Date() });
+
+        // Return user data without password hash
+        const userData = {
+            user_id: user.user_id,
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            display_name: user.display_name,
+            profile_picture_url: user.profile_picture_url,
+            timezone: user.timezone,
+            created_at: user.created_at,
+            last_login: user.last_login
+        };
+
+        res.json({ token, user: userData });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Server error' });

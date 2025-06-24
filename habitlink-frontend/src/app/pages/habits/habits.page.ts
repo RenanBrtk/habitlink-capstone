@@ -22,8 +22,14 @@ export class HabitsPage implements OnInit {
   habits: any[] = [];
 
   constructor(private http: HttpClient, private router: Router) {}
-
   ngOnInit() {
+    this.loadHabits();
+  }
+
+  ionViewWillEnter() {
+    // This method is called every time the page is entered
+    // It will refresh the habits when navigating back from create habit
+    console.log('Habits ionViewWillEnter - refreshing habits');
     this.loadHabits();
   }
 
@@ -32,17 +38,18 @@ export class HabitsPage implements OnInit {
     this.http.get<any[]>('http://localhost:3000/api/habits', {
       headers: {
         Authorization: `Bearer ${token}`
-      }
-    }).subscribe({
+      }    }).subscribe({
       next: (res) => {
-        // For now, all habits — you can later filter by frequency
+        console.log('Habits loaded:', res); 
         this.habits = res.map(habit => ({
           ...habit,
           streak: null,
           completedToday: false
         }));
 
-        // For each habit, load progress
+        console.log('Habits with colors:', this.habits); 
+
+        
         this.habits.forEach(habit => {
           this.http.get<any>(`http://localhost:3000/api/habits/${habit.habit_id}/progress`, {
             headers: {

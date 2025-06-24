@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, AlertController } from '@ionic/angular';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
@@ -23,10 +23,11 @@ export class HabitDetailsPage implements OnInit {
   habitId: string = '';
   completionRate: number = 0;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) {}
-
+  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router, private alertController: AlertController) {}
   ngOnInit() {
     this.habitId = this.route.snapshot.paramMap.get('habit_id') || '';
+    console.log('HabitDetailsPage initialized with habitId:', this.habitId);
+    console.log('Route params:', this.route.snapshot.paramMap);
     this.loadHabit();
     this.loadProgress();
   }
@@ -71,8 +72,7 @@ export class HabitDetailsPage implements OnInit {
     } else {
       this.completionRate = 0;
     }
-  }
-  markComplete() {
+  }  markComplete() {
   const token = localStorage.getItem('token');
   this.http.post(`http://localhost:3000/api/habits/${this.habitId}/complete`, {}, {
     headers: {
@@ -81,10 +81,70 @@ export class HabitDetailsPage implements OnInit {
   }).subscribe({
     next: (res) => {
       console.log('Marked complete:', res);
-      this.loadProgress(); // Refresh streaks/logs after marking complete
+      this.loadProgress();
     },
     error: (err) => {
       console.error('Error marking complete:', err);
+    }
+  });
+}
+
+async deleteHabit() {
+  console.log('Delete button clicked!');
+  console.log('Current habit:', this.habit);
+  console.log('Habit ID:', this.habitId);
+  
+  const alert = await this.alertController.create({
+    header: 'Delete Habit',
+    message: `Are you sure you want to delete "${this.habit.title}"? This action cannot be undone.`,
+    buttons: [
+      {
+        text: 'Cancel',
+        role: 'cancel',
+        handler: () => {
+          console.log('Delete cancelled');
+        }
+      },
+      {
+        text: 'Delete',
+        role: 'destructive',
+        handler: () => {
+          console.log('Delete confirmed');
+          this.performDelete();
+        }
+      }
+    ]
+  });
+  
+  await alert.present();
+}
+
+performDelete() {
+  const token = localStorage.getItem('token');
+  console.log('performDelete called');
+  console.log('Token:', token ? 'Present' : 'Missing');
+  console.log('Habit ID for deletion:', this.habitId);
+  console.log('DELETE URL:', `http://localhost:3000/api/habits/${this.habitId}`);
+  
+  if (!this.habitId) {
+    console.error('No habit ID available for deletion');
+    return;
+  }
+  
+  this.http.delete(`http://localhost:3000/api/habits/${this.habitId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }).subscribe({
+    next: (res) => {
+      console.log('Habit deleted successfully:', res);
+      this.router.navigate(['/all-habits']);
+    },
+    error: (err) => {
+      console.error('Error deleting habit:', err);
+      console.error('Status:', err.status);
+      console.error('Message:', err.message);
+      console.error('Full error:', err);
     }
   });
 }

@@ -1,0 +1,104 @@
+.time-picker-container {
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: #fff;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+  
+  &:hover {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+  
+  .time-display {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: var(--dark-gray);
+    font-weight: 500;
+    
+    span {
+      margin-left: 2px;
+    }
+  }
+}
+
+.time-picker-modal {
+  background: white;
+  border-radius: 16px 16px 0 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 16px 16px 0 0;
+    
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--dark-gray);
+    }
+    
+    ion-button {
+      --padding-start: 8px;
+      --padding-end: 8px;
+      --padding-top: 8px;
+      --padding-bottom: 8px;
+    }
+  }
+  
+  .time-picker-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fafafa;
+    
+    ion-datetime {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  .modal-footer {
+    padding: 20px 24px;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid #e9ecef;
+    background: white;
+    
+    ion-button {
+      flex: 1;
+      height: 48px;
+      border-radius: 12px;
+      font-weight: 600;
+      
+      &[fill="outline"] {
+        --border-width: 2px;
+        --border-color: var(--primary-blue);
+        --color: var(--primary-blue);
+      }
+    }
+  }
+}

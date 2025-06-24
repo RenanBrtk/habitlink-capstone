@@ -1,22 +1,242 @@
 // For information on how to create your own theme, please see:
 // http://ionicframework.com/docs/theming/
 
-// HabitLink Color System (matching mockup)
+// HabitLink Enhanced Color System (2025 Ionic Standards)
 :root {
-  --primary-blue: #007AFF;
-  --success-green: #28a745;
-  --warning-yellow: #ffc107;
+  /* Primary Color - Modern Blue */
+  --ion-color-primary: #3880ff;
+  --ion-color-primary-rgb: 56, 128, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #3171e0;
+  --ion-color-primary-tint: #4c8dff;
+
+  /* Secondary Color */
+  --ion-color-secondary: #0cd1e8;
+  --ion-color-secondary-rgb: 12, 209, 232;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #0bb8cc;
+  --ion-color-secondary-tint: #24d6ea;
+
+  /* Success Color */
+  --ion-color-success: #10dc60;
+  --ion-color-success-rgb: 16, 220, 96;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #0ec254;
+  --ion-color-success-tint: #28e070;
+
+  /* Warning Color */
+  --ion-color-warning: #ffce00;
+  --ion-color-warning-rgb: 255, 206, 0;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e0b500;
+  --ion-color-warning-tint: #ffd31a;
+
+  /* Danger Color */
+  --ion-color-danger: #f04141;
+  --ion-color-danger-rgb: 240, 65, 65;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #d33939;
+  --ion-color-danger-tint: #f25454;
+
+  /* Custom HabitLink Colors */
+  --primary-blue: var(--ion-color-primary);
+  --success-green: var(--ion-color-success);
+  --warning-yellow: var(--ion-color-warning);
   --accent-purple: #6f42c1;
-  --danger-red: #dc3545;
+  --danger-red: var(--ion-color-danger);
   --light-gray: #f8f9fa;
   --medium-gray: #6c757d;
   --dark-gray: #495057;
+
+  /* Enhanced Background Colors */
+  --ion-background-color: #ffffff;
+  --ion-background-color-rgb: 255, 255, 255;
+  --ion-text-color: #000000;
+  --ion-text-color-rgb: 0, 0, 0;
   
-  // Override Ionic colors
-  --ion-color-primary: #007AFF;
-  --ion-color-primary-rgb: 0, 122, 255;
+  /* Item Colors */
+  --ion-item-background: var(--ion-background-color);
+  --ion-item-border-color: #e6e6e6;
+  
+  /* Card Enhancement */
+  --ion-card-background: var(--ion-background-color);
+  --ion-card-color: var(--ion-text-color);
+  
+  /* Step Colors for Light Theme */
+  --ion-color-step-50: #f8f9fa;
+  --ion-color-step-100: #f1f3f4;
+  --ion-color-step-150: #e8eaed;
+  --ion-color-step-200: #dadce0;
+  --ion-color-step-250: #ceced0;
+  --ion-color-step-300: #bdc1c6;
+  --ion-color-step-400: #9aa0a6;
+  --ion-color-step-500: #80868b;
+  --ion-color-step-600: #5f6368;
+  --ion-color-step-700: #3c4043;
+  --ion-color-step-800: #202124;
+  --ion-color-step-900: #171717;
+  --ion-color-step-950: #000000;
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-color-primary: #4c8dff;
+    --ion-color-primary-rgb: 76, 141, 255;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    --ion-color-primary-shade: #4379e0;
+    --ion-color-primary-tint: #5e98ff;
+
+    --ion-color-secondary: #50c8ff;
+    --ion-color-secondary-rgb: 80, 200, 255;
+    --ion-color-secondary-contrast: #000000;
+    --ion-color-secondary-contrast-rgb: 0, 0, 0;
+    --ion-color-secondary-shade: #46b0e0;
+    --ion-color-secondary-tint: #62ceff;
+
+    --ion-color-success: #2dd55b;
+    --ion-color-success-rgb: 45, 213, 91;
+    --ion-color-success-contrast: #000000;
+    --ion-color-success-contrast-rgb: 0, 0, 0;
+    --ion-color-success-shade: #28bb50;
+    --ion-color-success-tint: #42d96b;
+
+    --ion-color-warning: #ffce31;
+    --ion-color-warning-rgb: 255, 206, 49;
+    --ion-color-warning-contrast: #000000;
+    --ion-color-warning-contrast-rgb: 0, 0, 0;
+    --ion-color-warning-shade: #e0b52b;
+    --ion-color-warning-tint: #ffd546;
+
+    --ion-color-danger: #ff5370;
+    --ion-color-danger-rgb: 255, 83, 112;
+    --ion-color-danger-contrast: #ffffff;
+    --ion-color-danger-contrast-rgb: 255, 255, 255;
+    --ion-color-danger-shade: #e04962;
+    --ion-color-danger-tint: #ff647e;
+
+    /* Enhanced Background System for Better Contrast */
+    --ion-background-color: #0f1419;
+    --ion-background-color-rgb: 15, 20, 25;
+    --ion-text-color: #e6edf3;
+    --ion-text-color-rgb: 230, 237, 243;
+    
+    /* Item and Card Backgrounds */
+    --ion-item-background: #1c2128;
+    --ion-item-border-color: #373e47;
+    --ion-card-background: #1c2128;
+    --ion-card-color: #e6edf3;
+    
+    /* Step Colors for Better Gradations */
+    --ion-color-step-50: #21262d;
+    --ion-color-step-100: #30363d;
+    --ion-color-step-150: #373e47;
+    --ion-color-step-200: #484f58;
+    --ion-color-step-250: #56606a;
+    --ion-color-step-300: #656c76;
+    --ion-color-step-400: #768390;
+    --ion-color-step-500: #8b949e;
+    --ion-color-step-600: #b1bac4;
+    --ion-color-step-700: #c9d1d9;
+    --ion-color-step-800: #e6edf3;
+    --ion-color-step-900: #f0f6fc;
+    --ion-color-step-950: #ffffff;
+    
+    /* Toolbar and Header Colors */
+    --ion-toolbar-background: #161b22;
+    --ion-toolbar-color: #e6edf3;
+    
+    /* Update custom colors for dark mode */
+    --primary-blue: var(--ion-color-primary);
+    --success-green: var(--ion-color-success);
+    --warning-yellow: var(--ion-color-warning);
+    --danger-red: var(--ion-color-danger);
+    --light-gray: var(--ion-color-step-100);
+    --medium-gray: var(--ion-color-step-500);
+    --dark-gray: var(--ion-color-step-700);
+  }
+}
+
+/* Manual dark theme class support */
+[data-theme="dark"] {
+  --ion-color-primary: #4c8dff;
+  --ion-color-primary-rgb: 76, 141, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #0056b3;
-  --ion-color-primary-tint: #1a86ff;
+  --ion-color-primary-shade: #4379e0;
+  --ion-color-primary-tint: #5e98ff;
+
+  --ion-color-secondary: #50c8ff;
+  --ion-color-secondary-rgb: 80, 200, 255;
+  --ion-color-secondary-contrast: #000000;
+  --ion-color-secondary-contrast-rgb: 0, 0, 0;
+  --ion-color-secondary-shade: #46b0e0;
+  --ion-color-secondary-tint: #62ceff;
+
+  --ion-color-success: #2dd55b;
+  --ion-color-success-rgb: 45, 213, 91;
+  --ion-color-success-contrast: #000000;
+  --ion-color-success-contrast-rgb: 0, 0, 0;
+  --ion-color-success-shade: #28bb50;
+  --ion-color-success-tint: #42d96b;
+
+  --ion-color-warning: #ffce31;
+  --ion-color-warning-rgb: 255, 206, 49;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e0b52b;
+  --ion-color-warning-tint: #ffd546;
+
+  --ion-color-danger: #ff5370;
+  --ion-color-danger-rgb: 255, 83, 112;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #e04962;
+  --ion-color-danger-tint: #ff647e;
+
+  /* Enhanced Background System for Better Contrast */
+  --ion-background-color: #0f1419;
+  --ion-background-color-rgb: 15, 20, 25;
+  --ion-text-color: #e6edf3;
+  --ion-text-color-rgb: 230, 237, 243;
+  
+  /* Item and Card Backgrounds */
+  --ion-item-background: #1c2128;
+  --ion-item-border-color: #373e47;
+  --ion-card-background: #1c2128;
+  --ion-card-color: #e6edf3;
+  
+  /* Step Colors for Better Gradations */
+  --ion-color-step-50: #21262d;
+  --ion-color-step-100: #30363d;
+  --ion-color-step-150: #373e47;
+  --ion-color-step-200: #484f58;
+  --ion-color-step-250: #56606a;
+  --ion-color-step-300: #656c76;
+  --ion-color-step-400: #768390;
+  --ion-color-step-500: #8b949e;
+  --ion-color-step-600: #b1bac4;
+  --ion-color-step-700: #c9d1d9;
+  --ion-color-step-800: #e6edf3;
+  --ion-color-step-900: #f0f6fc;
+  --ion-color-step-950: #ffffff;
+  
+  /* Toolbar and Header Colors */
+  --ion-toolbar-background: #161b22;
+  --ion-toolbar-color: #e6edf3;
+  
+  /* Update custom colors for dark mode */
+  --primary-blue: var(--ion-color-primary);
+  --success-green: var(--ion-color-success);
+  --warning-yellow: var(--ion-color-warning);
+  --danger-red: var(--ion-color-danger);
+  --light-gray: var(--ion-color-step-100);
+  --medium-gray: var(--ion-color-step-500);
+  --dark-gray: var(--ion-color-step-700);
 }

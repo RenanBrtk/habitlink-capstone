@@ -10,11 +10,16 @@
     <h3 style="margin: 0; color: var(--dark-gray);">Your Habits</h3>
     <ion-button size="small" fill="outline" routerLink="/all-habits">View All</ion-button>
   </div>
-
   <div *ngFor="let habit of habits">
     <ion-card class="habit-card" [routerLink]="['/habit', habit.habit_id]">
       <ion-card-content style="padding: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
+          <!-- Color indicator -->
+          <div 
+            style="width: 4px; height: 60px; border-radius: 2px; margin-right: 12px;"
+            [style.background]="habit.color || '#007AFF'">
+          </div>
+          
           <div style="flex: 1;">
             <div style="display: flex; align-items: center; margin-bottom: 8px;">
               <ion-badge class="streak-badge" style="margin-right: 12px;">
@@ -64,7 +69,7 @@
 
 <!-- Tab Bar -->
 <ion-footer>
-  <ion-toolbar style="--background: #f8f9fa;">
+  <ion-toolbar>
     <div style="display: flex; width: 100%; justify-content: space-around; align-items: center; padding: 8px 0;">
       
       <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigate('/dashboard')">

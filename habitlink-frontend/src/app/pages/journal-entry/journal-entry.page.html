@@ -1,0 +1,128 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/journal"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ getPageTitle() }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button 
+        *ngIf="isEditMode" 
+        fill="clear" 
+        color="danger"
+        (click)="deleteEntry()">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" *ngIf="!isLoading">
+  <!-- Entry Form -->
+  <div class="entry-form">
+    <!-- Date Input -->
+    <ion-item lines="none" style="margin-bottom: 16px; --padding-start: 0;">
+      <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--ion-text-color);">
+        Entry Date
+      </ion-label>
+      <ion-input 
+        [(ngModel)]="entry.entry_date" 
+        type="date"
+        style="border: 2px solid var(--ion-color-light); border-radius: 12px; padding: 12px 16px; background: var(--ion-color-light-tint);">
+      </ion-input>
+    </ion-item>
+
+    <!-- Mood Selection -->
+    <div style="margin-bottom: 24px;">
+      <ion-label style="font-weight: 600; color: var(--ion-text-color); margin-bottom: 12px; display: block;">
+        How was your day?
+      </ion-label>
+      <div class="mood-selection" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <ion-button 
+          *ngFor="let mood of moodOptions"
+          [fill]="entry.mood === mood.value ? 'solid' : 'outline'"
+          [color]="entry.mood === mood.value ? mood.color : 'medium'"
+          (click)="selectMood(mood.value)"
+          style="--border-radius: 12px; height: 60px; flex-direction: column; text-transform: none;">
+          <ion-icon [name]="mood.icon" style="font-size: 20px; margin-bottom: 4px;"></ion-icon>
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <span style="font-weight: 600; font-size: 12px;">{{ mood.label }}</span>
+            <span style="font-size: 10px; opacity: 0.8;">{{ mood.description }}</span>
+          </div>
+        </ion-button>
+      </div>
+    </div>    <!-- Content Textarea -->
+    <ion-item lines="none" style="margin-bottom: 20px; --padding-start: 0;">
+      <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--ion-text-color);">
+        Your Thoughts *
+      </ion-label>
+      <ion-textarea 
+        [(ngModel)]="entry.content" 
+        placeholder="Share your thoughts, experiences, and reflections..."
+        rows="8"
+        style="border: 2px solid var(--ion-color-light); border-radius: 12px; padding: 12px 16px; background: var(--ion-color-light-tint); min-height: 120px;">
+      </ion-textarea>
+    </ion-item>
+
+    <!-- Tags Section -->
+    <div style="margin-bottom: 24px;">
+      <ion-label style="font-weight: 600; color: var(--ion-text-color); margin-bottom: 12px; display: block;">
+        <ion-icon name="pricetag-outline" style="margin-right: 4px;"></ion-icon>
+        Tags (Optional)
+      </ion-label>
+      
+      <!-- Add Tag Input -->
+      <div style="display: flex; gap: 8px; margin-bottom: 12px; align-items: center;">
+        <ion-input 
+          [(ngModel)]="newTag" 
+          type="text" 
+          placeholder="Add a tag..."
+          (keypress)="onTagKeyPress($event)"
+          style="flex: 1; border: 2px solid var(--ion-color-light); border-radius: 8px; padding: 8px 12px; background: var(--ion-color-light-tint);">
+        </ion-input>
+        <ion-button 
+          fill="clear" 
+          (click)="addTag()"
+          [disabled]="!newTag.trim()">
+          <ion-icon name="add" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+
+      <!-- Tags Display -->
+      <div *ngIf="entry.tags.length > 0" class="tags-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <ion-chip 
+          *ngFor="let tag of entry.tags" 
+          color="primary" 
+          style="font-size: 12px;">
+          {{ tag }}
+          <ion-icon name="close" (click)="removeTag(tag)" style="margin-left: 4px; cursor: pointer;"></ion-icon>
+        </ion-chip>
+      </div>    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons" style="display: flex; gap: 12px; margin-top: 32px;">
+      <ion-button 
+        fill="outline" 
+        expand="block" 
+        (click)="cancel()"
+        style="--border-radius: 12px;">
+        Cancel
+      </ion-button>
+      <ion-button 
+        color="primary" 
+        expand="block" 
+        (click)="saveEntry()"
+        [disabled]="isSaving || !entry.content.trim()"
+        style="--border-radius: 12px;">
+        <ion-spinner *ngIf="isSaving" name="lines-small" style="margin-right: 8px;"></ion-spinner>
+        {{ getSaveButtonText() }}
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Loading State -->
+<ion-content *ngIf="isLoading" class="ion-padding">
+  <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+    <ion-spinner name="lines"></ion-spinner>
+  </div>
+</ion-content>

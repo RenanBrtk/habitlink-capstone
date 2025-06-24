@@ -46,4 +46,29 @@ export const routes: Routes = [
     path: 'habit-details',
     loadComponent: () => import('./pages/habit-details/habit-details.page').then( m => m.HabitDetailsPage)
   },
+  {
+    path: 'journal',
+    loadComponent: () => import('./pages/journal/journal.page').then(m => m.JournalPage),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'journal/create',
+    loadComponent: () => import('./pages/journal-entry/journal-entry.page').then(m => m.JournalEntryPage),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'journal/edit/:entry_id',
+    loadComponent: () => import('./pages/journal-entry/journal-entry.page').then(m => m.JournalEntryPage),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'journal/:entry_id',
+    loadComponent: () => import('./pages/journal-detail/journal-detail.page').then(m => m.JournalDetailPage),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./pages/profile/profile.page').then(m => m.ProfilePage),
+    canActivate: [authGuard]
+  },
 ];

@@ -1,0 +1,93 @@
+.entry-header {
+  h1 {
+    word-wrap: break-word;
+    hyphens: auto;
+  }
+}
+
+.entry-content {
+  ion-card {
+    ion-card-content {
+      div {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+    }
+  }
+}
+
+.habit-reflection {
+  ion-card {
+    background: linear-gradient(135deg, var(--ion-color-primary-tint), var(--ion-color-light));
+    
+    ion-card-content {
+      div {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+    }
+  }
+}
+
+.entry-tags {
+  ion-chip {
+    --border-radius: 16px;
+    height: 28px;
+    margin: 2px;
+  }
+}
+
+.entry-metadata {
+  ion-card {
+    border: 1px solid var(--ion-color-step-200);
+    
+    ion-icon {
+      display: block;
+    }
+  }
+}
+
+.action-buttons {
+  padding: 16px 0;
+  
+  ion-button {
+    height: 48px;
+    font-weight: 600;
+    
+    &[fill="outline"] {
+      --border-width: 2px;
+      --border-color: var(--ion-color-medium);
+      --color: var(--ion-color-medium);
+    }
+  }
+}
+
+.empty-state {
+  ion-icon {
+    color: var(--ion-color-primary);
+    opacity: 0.6;
+  }
+}
+
+// Dark mode specific styles
+:root[data-theme="dark"] {
+  .entry-metadata ion-card {
+    --background: var(--ion-color-step-100);
+    border-color: var(--ion-color-step-200);
+  }
+  
+  .habit-reflection ion-card {
+    background: linear-gradient(135deg, var(--ion-color-primary-shade), var(--ion-color-step-100));
+  }
+}
+
+// Responsive improvements
+@media (max-width: 768px) {
+  .entry-header h1 {
+    font-size: 20px;
+  }
+  
+  .entry-content ion-card-content {
+    padding: 16px;
+  }
+}

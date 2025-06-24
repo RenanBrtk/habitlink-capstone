@@ -22,8 +22,11 @@ export class DashboardPage implements OnInit {
     successRate: 0,
     totalDays: 0
   };
-  
-  constructor(private router: Router, private http: HttpClient) {}
+    constructor(
+    private router: Router, 
+    private http: HttpClient
+  ) {}
+
   ngOnInit() {
     const user = localStorage.getItem('user');
     if (user) {
@@ -32,6 +35,14 @@ export class DashboardPage implements OnInit {
     }
     
     this.setGreeting();
+    this.loadTodaysHabits();
+    this.loadStats();
+  }
+
+  ionViewWillEnter() {
+    // This method is called every time the page is entered
+    // It will refresh the data when navigating back from habit details
+    console.log('Dashboard ionViewWillEnter - refreshing data');
     this.loadTodaysHabits();
     this.loadStats();
   }
@@ -48,18 +59,20 @@ export class DashboardPage implements OnInit {
       this.greeting = 'Good Evening 🌅'; // Evening
     }
   }
-
   loadTodaysHabits() {
     const token = localStorage.getItem('token');
     this.http.get<any[]>('http://localhost:3000/api/habits', {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
+      headers: { Authorization: `Bearer ${token}` }    }).subscribe({
       next: (habits) => {
-        this.todaysHabits = habits.slice(0, 3).map(habit => ({
+        console.log('Dashboard habits loaded:', habits); // Debug: check if colors are in the data
+        // Remove the slice limit to show all habits
+        this.todaysHabits = habits.map(habit => ({
           ...habit,
           completed: false,
           streak: 0
         }));
+        
+        console.log('Today\'s habits with colors:', this.todaysHabits); // Debug: check colors after mapping
         
         // Load completion status for each habit
         this.todaysHabits.forEach(habit => {

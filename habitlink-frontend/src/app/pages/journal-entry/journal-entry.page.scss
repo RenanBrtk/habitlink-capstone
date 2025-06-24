@@ -1,0 +1,93 @@
+.entry-form {
+  max-width: 100%;
+  
+  ion-item {
+    --background: transparent;
+    --border-color: transparent;
+    --inner-padding-end: 0;
+    margin-bottom: 16px;
+    
+    ion-input, ion-textarea {
+      --padding-start: 16px;
+      --padding-end: 16px;
+      --padding-top: 12px;
+      --padding-bottom: 12px;
+      
+      &:focus {
+        border-color: var(--ion-color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+      }
+    }
+  }
+}
+
+.mood-selection {
+  ion-button {
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+    text-transform: none;
+    font-weight: 500;
+    
+    &:not([fill="solid"]) {
+      --border-width: 2px;
+    }
+  }
+}
+
+.tags-container {
+  ion-chip {
+    --border-radius: 16px;
+    height: 28px;
+    
+    ion-icon {
+      font-size: 14px;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.action-buttons {
+  padding: 16px 0;
+  
+  ion-button {
+    height: 48px;
+    font-weight: 600;
+    
+    &[fill="outline"] {
+      --border-width: 2px;
+      --border-color: var(--ion-color-primary);
+      --color: var(--ion-color-primary);
+    }
+  }
+}
+
+// Responsive improvements
+@media (max-width: 768px) {
+  .mood-selection {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    
+    ion-button {
+      height: 50px;
+    }
+  }
+}
+
+// Dark mode specific styles
+:root[data-theme="dark"] {
+  .entry-form {
+    ion-input, ion-textarea {
+      --background: var(--ion-color-step-100);
+      border-color: var(--ion-color-step-200) !important;
+      
+      &:focus {
+        border-color: var(--ion-color-primary) !important;
+      }
+    }
+  }
+}

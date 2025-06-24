@@ -8,70 +8,91 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <!-- Filter Buttons -->
-  <div style="margin-bottom: 20px; display: flex; gap: 8px; justify-content: center;">
+  <!-- Enhanced Filter Buttons -->
+  <div class="filter-buttons">
     <button 
-      [style.background]="filter === 'all' ? 'var(--primary-blue)' : 'var(--light-gray)'"
-      [style.color]="filter === 'all' ? 'white' : 'var(--dark-gray)'"
-      style="border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;"
+      class="filter-button"
+      [class.active]="filter === 'all'"
       (click)="filter = 'all'">
+      <ion-icon name="apps-outline" style="margin-right: 4px;"></ion-icon>
       All
     </button>
     <button 
-      [style.background]="filter === 'daily' ? 'var(--primary-blue)' : 'var(--light-gray)'"
-      [style.color]="filter === 'daily' ? 'white' : 'var(--dark-gray)'"
-      style="border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;"
+      class="filter-button"
+      [class.active]="filter === 'daily'"
       (click)="filter = 'daily'">
+      <ion-icon name="today-outline" style="margin-right: 4px;"></ion-icon>
       Daily
     </button>
     <button 
-      [style.background]="filter === 'weekly' ? 'var(--primary-blue)' : 'var(--light-gray)'"
-      [style.color]="filter === 'weekly' ? 'white' : 'var(--dark-gray)'"
-      style="border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;"
+      class="filter-button"
+      [class.active]="filter === 'weekly'"
       (click)="filter = 'weekly'">
+      <ion-icon name="calendar-outline" style="margin-right: 4px;"></ion-icon>
       Weekly
     </button>
     <button 
-      [style.background]="filter === 'monthly' ? 'var(--primary-blue)' : 'var(--light-gray)'"
-      [style.color]="filter === 'monthly' ? 'white' : 'var(--dark-gray)'"
-      style="border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;"
+      class="filter-button"
+      [class.active]="filter === 'monthly'"
       (click)="filter = 'monthly'">
+      <ion-icon name="calendar-clear-outline" style="margin-right: 4px;"></ion-icon>
       Monthly
     </button>
-  </div>
-
-  <!-- Habit Cards -->
-  <div *ngFor="let habit of filteredHabits()">
+  </div>  <!-- Enhanced Habit Cards -->
+  <div *ngFor="let habit of filteredHabits()" class="animate-in">
     <ion-card class="habit-card" [routerLink]="['/habit', habit.habit_id]">
       <ion-card-content style="padding: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <!-- Enhanced Color indicator with icon -->
+          <div style="display: flex; align-items: center; margin-right: 12px;">
+            <div 
+              style="width: 4px; height: 60px; border-radius: 2px; margin-right: 8px; flex-shrink: 0;"
+              [style.background]="habit.color || 'var(--ion-color-primary)'">
+            </div>
+            <div style="width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;"
+                 [style.background]="habit.color || 'var(--ion-color-primary)'">
+              <ion-icon 
+                [name]="getHabitIcon(habit.frequency)" 
+                style="font-size: 18px;">
+              </ion-icon>
+            </div>
+          </div>
+          
           <div style="flex: 1;">
-            <h3 class="habit-title" style="margin-bottom: 4px;">{{ habit.title }}</h3>
+            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+              <h3 class="habit-title" style="margin-bottom: 4px; margin-right: 8px;">{{ habit.title }}</h3>
+              <ion-badge color="primary" style="font-size: 10px;">
+                {{ habit.frequency | titlecase }}
+              </ion-badge>
+            </div>
             <p class="habit-subtitle" style="margin-bottom: 8px;">
-              {{ habit.frequency | titlecase }} • {{ habit.frequency_value }} time(s)
+              {{ habit.frequency_value }} time(s) per {{ habit.frequency }}
             </p>
-            <p style="margin: 0; color: var(--medium-gray); font-size: 14px; line-height: 1.4;">
-              {{ habit.description }}
+            <p style="margin: 0; color: var(--ion-color-step-500); font-size: 14px; line-height: 1.4;">
+              <ion-icon name="document-text-outline" style="margin-right: 4px; font-size: 12px;"></ion-icon>
+              {{ habit.description || 'No description' }}
             </p>
           </div>
           
-          <div style="margin-left: 12px;">
+          <div style="margin-left: 12px; display: flex; flex-direction: column; align-items: center;">
             <ion-icon 
               name="chevron-forward" 
-              style="color: var(--medium-gray); font-size: 20px;">
+              style="color: var(--ion-color-step-400); font-size: 20px;">
             </ion-icon>
           </div>
         </div>
       </ion-card-content>
     </ion-card>
   </div>
-
-  <!-- Empty State -->
-  <div *ngIf="filteredHabits().length === 0" style="text-align: center; margin-top: 60px; color: var(--medium-gray);">
-    <ion-icon name="search-outline" style="font-size: 64px; margin-bottom: 16px;"></ion-icon>
-    <h3>No habits found</h3>
-    <p *ngIf="filter !== 'all'">Try changing your filter or create a new {{ filter }} habit.</p>
-    <p *ngIf="filter === 'all'">Create your first habit to get started!</p>
+  <!-- Enhanced Empty State -->
+  <div *ngIf="filteredHabits().length === 0" class="empty-state">
+    <ion-icon [name]="getEmptyStateIcon()" style="font-size: 64px; margin-bottom: 16px; color: var(--ion-color-step-400);"></ion-icon>
+    <h3>{{ getEmptyStateTitle() }}</h3>
+    <p>{{ getEmptyStateMessage() }}</p>
+    <ion-button routerLink="/create-habit" fill="outline" color="primary">
+      <ion-icon name="add-outline" slot="start"></ion-icon>
+      Create {{ filter !== 'all' ? filter : '' }} Habit
+    </ion-button>
   </div>
 
 </ion-content>

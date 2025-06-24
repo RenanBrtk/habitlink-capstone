@@ -1,0 +1,230 @@
+.stat-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  height: 100%;
+  
+  ion-card-header {
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    
+    ion-card-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--ion-color-primary);
+      margin: 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    ion-card-subtitle {
+      font-size: 12px;
+      color: var(--ion-color-step-600);
+      margin: 4px 0 0 0;
+      line-height: 1.2;
+    }
+  }
+}
+
+// Habit card styling
+.habit-card {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &.completed {
+    opacity: 0.7;
+    
+    .habit-title {
+      text-decoration: line-through;
+      color: var(--ion-color-step-500);
+    }
+  }
+  
+  .habit-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+  
+  .habit-subtitle {
+    margin: 0;
+    font-size: 12px;
+    color: var(--ion-color-step-600);
+  }
+  
+  .streak-badge {
+    font-size: 10px;
+    height: 20px;
+    color: var(--ion-color-primary);
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+  }
+}
+
+// Pulse animation for incomplete habits
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+}
+
+.pulse-indicator {
+  animation: pulse 2s infinite;
+}
+
+// Animation for habit cards
+.animate-in {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Dark mode specific styles
+:root[data-theme="dark"] {
+  .stat-card {
+    --background: var(--ion-color-step-100);
+    border: 1px solid var(--ion-color-step-150);
+    
+    &:hover {
+      --background: var(--ion-color-step-150);
+      border-color: var(--ion-color-step-200);
+    }
+  }
+  
+  .habit-card {
+    --background: var(--ion-color-step-100);
+    border: 1px solid var(--ion-color-step-150);
+    
+    &:hover {
+      --background: var(--ion-color-step-150);
+      border-color: var(--ion-color-step-200);
+    }
+    
+    .habit-title {
+      color: var(--ion-color-step-800);
+    }
+    
+    .habit-subtitle {
+      color: var(--ion-color-step-600);
+    }
+  }
+  
+  .habits-scroll-container {
+    // Custom scrollbar for dark mode
+    &::-webkit-scrollbar-track {
+      background: var(--ion-color-step-100);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--ion-color-step-400);
+      
+      &:hover {
+        background: var(--ion-color-primary);
+      }
+    }
+    
+    // Firefox scrollbar
+    scrollbar-color: var(--ion-color-step-400) var(--ion-color-step-100);
+  }
+}
+
+// Tab bar styles (consistent with other pages)
+.tab-item {
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  
+  &:hover {
+    background: rgba(0, 122, 255, 0.1);
+  }
+  
+  &.active {
+    background: rgba(0, 122, 255, 0.1);
+  }
+}
+
+// Scrollable habits container
+.habits-scroll-container {
+  max-height: 400px; 
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px; 
+  position: relative;
+  
+  // Custom scrollbar styling
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: var(--ion-color-light);
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--ion-color-medium);
+    border-radius: 4px;
+    
+    &:hover {
+      background: var(--ion-color-primary);
+    }
+  }
+  
+  // Firefox scrollbar
+  scrollbar-width: thin;
+  scrollbar-color: var(--ion-color-medium) var(--ion-color-light);
+  
+  // subtle gradient at bottom when scrollable
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(transparent, var(--ion-background-color));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  // fade effect when scrolled
+  &.has-scroll::after {
+    opacity: 1;
+  }
+}

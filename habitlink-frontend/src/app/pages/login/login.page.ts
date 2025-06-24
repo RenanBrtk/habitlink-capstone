@@ -18,7 +18,6 @@ export class LoginPage {
   error: string = '';
 
   constructor(private http: HttpClient, private router: Router) {}
-
   login() {
     this.http.post<any>('http://localhost:3000/api/login', {
       email: this.email,
@@ -26,6 +25,7 @@ export class LoginPage {
     }).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {

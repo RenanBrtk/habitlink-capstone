@@ -1,0 +1,134 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/journal"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Journal Entry</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="editEntry()" *ngIf="entry">
+        <ion-icon name="create"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" color="danger" (click)="deleteEntry()" *ngIf="entry">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" *ngIf="!isLoading && entry">  <!-- Entry Header -->
+  <div class="entry-header" style="margin-bottom: 24px; text-align: center;">
+    <h1 style="margin: 0 0 8px 0; color: var(--ion-text-color); font-weight: 700; font-size: 24px; line-height: 1.3;">
+      Journal Entry
+    </h1>
+    <p style="margin: 0 0 12px 0; color: var(--ion-color-step-600); font-size: 14px;">
+      {{ formatDate(entry.entry_date) }}
+    </p>
+    
+    <!-- Mood Badge -->
+    <ion-badge 
+      [color]="getMoodOption(entry.mood)?.color" 
+      style="font-size: 12px; padding: 6px 12px; border-radius: 16px;">
+      <ion-icon 
+        [name]="getMoodOption(entry.mood)?.icon" 
+        style="margin-right: 4px; font-size: 12px;">
+      </ion-icon>
+      {{ getMoodOption(entry.mood)?.label }}
+    </ion-badge>
+  </div>
+
+  <!-- Entry Content -->
+  <div class="entry-content" style="margin-bottom: 24px;">
+    <ion-card style="border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
+      <ion-card-content style="padding: 20px;">
+        <div style="white-space: pre-wrap; line-height: 1.6; color: var(--ion-text-color); font-size: 16px;">
+          {{ entry.content }}
+        </div>
+      </ion-card-content>
+    </ion-card>  </div>
+
+  <!-- Tags (if exists) -->
+  <div *ngIf="entry.tags && entry.tags.length > 0" class="entry-tags" style="margin-bottom: 24px;">
+    <h3 style="color: var(--ion-text-color); margin: 0 0 12px 0; display: flex; align-items: center;">
+      <ion-icon name="pricetag" style="margin-right: 8px; color: var(--ion-color-primary);"></ion-icon>
+      Tags
+    </h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+      <ion-chip 
+        *ngFor="let tag of entry.tags" 
+        color="primary" 
+        style="font-size: 12px;">
+        {{ tag }}
+      </ion-chip>
+    </div>
+  </div>
+
+  <!-- Entry Metadata -->
+  <div class="entry-metadata" style="margin-bottom: 24px;">
+    <ion-card style="border-radius: 12px; background: var(--ion-color-light);">
+      <ion-card-content style="padding: 16px;">
+        <ion-grid style="padding: 0;">          <ion-row>
+            <ion-col size="6">
+              <div style="text-align: center;">
+                <ion-icon name="calendar" style="font-size: 20px; color: var(--ion-color-primary); margin-bottom: 4px;"></ion-icon>
+                <p style="margin: 0; font-size: 12px; color: var(--ion-color-step-600);">Created</p>
+                <p style="margin: 0; font-size: 12px; font-weight: 600; color: var(--ion-text-color);">
+                  {{ formatDateTime(entry.created_at) }}
+                </p>
+              </div>
+            </ion-col>
+            <ion-col size="6">
+              <div style="text-align: center;">
+                <ion-icon name="time" style="font-size: 20px; color: var(--ion-color-primary); margin-bottom: 4px;"></ion-icon>
+                <p style="margin: 0; font-size: 12px; color: var(--ion-color-step-600);">Updated</p>
+                <p style="margin: 0; font-size: 12px; font-weight: 600; color: var(--ion-text-color);">
+                  {{ formatDateTime(entry.updated_at) }}
+                </p>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons" style="display: flex; gap: 12px; margin-top: 32px;">
+    <ion-button 
+      fill="outline" 
+      expand="block" 
+      (click)="goBack()"
+      style="--border-radius: 12px;">
+      <ion-icon name="arrow-back" slot="start"></ion-icon>
+      Back to Journal
+    </ion-button>
+    <ion-button 
+      color="primary" 
+      expand="block" 
+      (click)="editEntry()"
+      style="--border-radius: 12px;">
+      <ion-icon name="create" slot="start"></ion-icon>
+      Edit Entry
+    </ion-button>
+  </div>
+</ion-content>
+
+<!-- Loading State -->
+<ion-content *ngIf="isLoading" class="ion-padding">
+  <div style="display: flex; justify-content: center; align-items: center; height: 200px; flex-direction: column;">
+    <ion-spinner name="lines" style="margin-bottom: 16px;"></ion-spinner>
+    <p style="color: var(--ion-color-step-600);">Loading journal entry...</p>
+  </div>
+</ion-content>
+
+<!-- Error State -->
+<ion-content *ngIf="!isLoading && !entry" class="ion-padding">
+  <div class="empty-state" style="text-align: center; padding: 60px 20px; color: var(--ion-color-step-500);">
+    <ion-icon name="document-text" style="font-size: 64px; margin-bottom: 16px; opacity: 0.6;"></ion-icon>
+    <h3 style="color: var(--ion-text-color); margin: 0 0 8px 0;">Entry not found</h3>
+    <p style="margin: 0 0 20px 0;">This journal entry might have been deleted or doesn't exist.</p>
+    <ion-button (click)="goBack()" color="primary">
+      <ion-icon name="arrow-back" slot="start"></ion-icon>
+      Back to Journal
+    </ion-button>
+  </div>
+</ion-content>

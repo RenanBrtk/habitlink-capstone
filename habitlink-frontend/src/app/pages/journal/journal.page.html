@@ -1,0 +1,192 @@
+<ion-header>
+  <ion-toolbar color="primary">    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Journal</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">  <!-- Stats Section -->
+  <div class="stats-section" style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 style="margin: 0; color: var(--ion-text-color); font-weight: 600;">Your Progress</h3>
+    </div>
+    
+    <ion-grid style="padding: 0;">
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="stat-card" style="margin: 0; border-radius: 16px;">
+            <ion-card-content style="padding: 16px; text-align: center;">
+              <h2 style="margin: 0; color: var(--ion-color-primary); font-size: 28px; font-weight: 700;">{{ stats.totalEntries }}</h2>
+              <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--ion-color-step-600); font-weight: 500;">Total Entries</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="stat-card" style="margin: 0; border-radius: 16px;">
+            <ion-card-content style="padding: 16px; text-align: center;">
+              <h2 style="margin: 0; color: var(--ion-color-success); font-size: 28px; font-weight: 700;">{{ stats.currentStreak }}</h2>
+              <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--ion-color-step-600); font-weight: 500;">Day Streak</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="stat-card" style="margin: 0; border-radius: 16px;">
+            <ion-card-content style="padding: 16px; text-align: center;">
+              <h2 style="margin: 0; color: var(--ion-color-tertiary); font-size: 28px; font-weight: 700;">{{ stats.monthlyEntries }}</h2>
+              <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--ion-color-step-600); font-weight: 500;">This Month</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="stat-card" style="margin: 0; border-radius: 16px;">
+            <ion-card-content style="padding: 16px; text-align: center;">
+              <h2 style="margin: 0; color: var(--ion-color-warning); font-size: 20px; font-weight: 600; line-height: 1.2; min-height: 32px; display: flex; align-items: center; justify-content: center;">{{ getMostFrequentMood() }}</h2>
+              <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--ion-color-step-600); font-weight: 500;">Common Mood</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>    </ion-grid>
+  </div>  <!-- Search and Filter Section -->
+  <div class="search-filter-section" style="margin-bottom: 24px;">
+    <!-- Search Bar -->
+    <ion-searchbar 
+      [(ngModel)]="searchTerm" 
+      (ionInput)="onSearch()"
+      placeholder="Search by content or tags..."
+      style="--background: var(--ion-color-light); --border-radius: 16px; margin-bottom: 16px; --box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    </ion-searchbar>
+
+    <!-- Mood Filter Buttons -->
+    <div class="mood-filters" style="display: flex; gap: 8px; overflow-x: auto; padding: 0 0 8px 0; scrollbar-width: none; -ms-overflow-style: none;">
+      <ion-button 
+        [fill]="selectedMood === '' ? 'solid' : 'outline'"
+        [color]="selectedMood === '' ? 'primary' : 'medium'"
+        size="small"
+        (click)="onMoodFilter('')"
+        style="--border-radius: 20px; --padding-start: 12px; --padding-end: 12px; height: 36px; font-size: 12px; font-weight: 500; min-width: fit-content; flex-shrink: 0;">
+        <ion-icon name="apps-outline" slot="start" style="font-size: 14px;"></ion-icon>
+        All Moods
+      </ion-button>
+      <ion-button 
+        *ngFor="let mood of moodOptions"
+        [fill]="selectedMood === mood.value ? 'solid' : 'outline'"
+        [color]="selectedMood === mood.value ? mood.color : 'medium'"
+        size="small"
+        (click)="onMoodFilter(mood.value)"
+        style="--border-radius: 20px; --padding-start: 12px; --padding-end: 12px; height: 36px; font-size: 12px; font-weight: 500; min-width: fit-content; flex-shrink: 0;">
+        <ion-icon [name]="mood.icon" slot="start" style="font-size: 14px;"></ion-icon>
+        {{ mood.label }}
+      </ion-button>
+    </div>
+  </div>
+  <!-- Journal Entries List -->
+  <div class="entries-section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 style="margin: 0; color: var(--ion-text-color); font-weight: 600;">Recent Entries</h3>
+      <ion-button size="small" fill="clear" color="primary" (click)="navigateToCreate()" style="--border-radius: 20px; font-weight: 500;">
+        <ion-icon name="add-circle-outline" slot="start" style="font-size: 16px;"></ion-icon>
+        New Entry
+      </ion-button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="entries.length === 0 && !isLoading" class="empty-state" style="text-align: center; padding: 48px 20px; color: var(--ion-color-step-500);">
+      <div style="background: var(--ion-color-primary-tint); border-radius: 50%; width: 80px; height: 80px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+        <ion-icon name="journal-outline" style="font-size: 40px; color: var(--ion-color-primary);"></ion-icon>
+      </div>
+      <h3 style="color: var(--ion-text-color); margin: 0 0 8px 0; font-weight: 600;">No journal entries yet</h3>
+      <p style="margin: 0 0 24px 0; color: var(--ion-color-step-600); line-height: 1.5;">Start journaling to track your thoughts and habit reflections.</p>
+      <ion-button (click)="navigateToCreate()" color="primary" style="--border-radius: 24px; --padding-start: 24px; --padding-end: 24px;">
+        <ion-icon name="create-outline" slot="start"></ion-icon>
+        Write Your First Entry
+      </ion-button>
+    </div>
+
+    <!-- Entries List -->
+    <div *ngFor="let entry of entries" class="entry-card animate-in" (click)="navigateToEntry(entry.entry_id)">
+      <ion-card 
+        style="margin-bottom: 16px; border-radius: 16px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 12px rgba(0,0,0,0.08);"
+        [class]="getMoodBackgroundClass(entry.mood)">
+        <ion-card-content style="padding: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div style="flex: 1;">
+              <p style="margin: 0; color: var(--ion-color-step-500); font-size: 13px; font-weight: 500;">
+                {{ formatDate(entry.entry_date) }}
+              </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <ion-badge [color]="getMoodColor(entry.mood)" style="font-size: 11px; --padding-start: 8px; --padding-end: 8px; --padding-top: 4px; --padding-bottom: 4px; border-radius: 12px;">
+                <ion-icon [name]="getMoodIcon(entry.mood)" style="margin-right: 4px; font-size: 12px;"></ion-icon>
+                {{ entry.mood | titlecase }}
+              </ion-badge>
+              <ion-icon name="chevron-forward-outline" style="color: var(--ion-color-step-400); font-size: 18px;"></ion-icon>
+            </div>
+          </div>
+          
+          <p style="margin: 0 0 12px 0; color: var(--ion-text-color); line-height: 1.6; font-size: 15px;">
+            {{ getTruncatedContent(entry.content) }}
+          </p>
+          
+          <!-- Tags Display -->
+          <div *ngIf="entry.tags && entry.tags.length > 0" style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <ion-chip 
+              *ngFor="let tag of getEntryTags(entry.tags)" 
+              color="primary" 
+              style="font-size: 11px; height: 24px; --background: var(--ion-color-primary-tint); --color: var(--ion-color-primary); border-radius: 12px;">
+              {{ tag }}
+            </ion-chip>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="isLoading" style="text-align: center; padding: 20px;">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll *ngIf="hasMore" (ionInfinite)="loadMore($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+
+  <!-- Floating Action Button -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 80px;">
+    <ion-fab-button color="primary" (click)="navigateToCreate()">
+      <ion-icon name="create-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<!-- Tab Bar -->
+<ion-footer>
+  <ion-toolbar>
+    <div style="display: flex; width: 100%; justify-content: space-around; align-items: center; padding: 8px 0;">
+      
+      <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigateTo('/dashboard')">
+        <ion-icon name="home" style="font-size: 24px; color: var(--medium-gray);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--medium-gray);">Dashboard</span>
+      </div>
+      
+      <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigateTo('/habits')">
+        <ion-icon name="list" style="font-size: 24px; color: var(--medium-gray);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--medium-gray);">Habits</span>
+      </div>
+      
+      <div class="tab-item active" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;">
+        <ion-icon name="book" style="font-size: 24px; color: var(--primary-blue);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--primary-blue); font-weight: 600;">Journal</span>
+      </div>
+      
+      <div class="tab-item" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;" (click)="navigateTo('/profile')">
+        <ion-icon name="person" style="font-size: 24px; color: var(--medium-gray);"></ion-icon>
+        <span style="font-size: 10px; margin-top: 4px; color: var(--medium-gray);">Profile</span>
+      </div>
+      
+    </div>
+  </ion-toolbar>
+</ion-footer>

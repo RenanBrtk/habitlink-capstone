@@ -35,9 +35,7 @@
           rows="3"
           style="border: 2px solid #e9ecef; border-radius: 12px; padding: 12px 16px; background: #fff;">
         </ion-textarea>
-      </ion-item>
-
-      <ion-item lines="none" style="margin-bottom: 16px; --padding-start: 0;">
+      </ion-item>      <ion-item lines="none" style="margin-bottom: 16px; --padding-start: 0;">
         <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--dark-gray);">
           Frequency
         </ion-label>
@@ -52,16 +50,58 @@
         </ion-select>
       </ion-item>
 
+      <!-- Color Selection -->
       <ion-item lines="none" style="margin-bottom: 16px; --padding-start: 0;">
+        <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--dark-gray);">
+          Choose Color
+        </ion-label>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+          <div 
+            *ngFor="let colorOption of colorOptions"
+            (click)="selectColor(colorOption.value)"
+            [style.background]="colorOption.value"
+            [style.border]="color === colorOption.value ? '3px solid #333' : '2px solid #e9ecef'"
+            style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
+            <ion-icon 
+              *ngIf="color === colorOption.value" 
+              name="checkmark" 
+              style="color: white; font-size: 20px; font-weight: bold;">
+            </ion-icon>
+          </div>
+        </div>
+      </ion-item>      <ion-item lines="none" style="margin-bottom: 16px; --padding-start: 0;">
         <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--dark-gray);">
           Target Time
         </ion-label>
-        <ion-datetime-button 
-          datetime="targetTime"
-          style="border: 2px solid #e9ecef; border-radius: 12px; padding: 12px 16px; background: #fff; width: 100%;">
-        </ion-datetime-button>
-        <ion-modal keepContentsMounted="true">
-          <ion-datetime id="targetTime" presentation="time" [(ngModel)]="target_time"></ion-datetime>
+        <div class="time-picker-container" (click)="openTimePicker()">
+          <div class="time-display">
+            <ion-icon name="time-outline" style="color: var(--primary-blue); margin-right: 8px;"></ion-icon>
+            <span>{{ getFormattedTime() }}</span>
+          </div>
+          <ion-icon name="chevron-down" style="color: var(--medium-gray);"></ion-icon>
+        </div>
+        <ion-modal [isOpen]="isTimePickerOpen" (didDismiss)="closeTimePicker()">
+          <ng-template>
+            <div class="time-picker-modal">
+              <div class="modal-header">
+                <h3>Select Time</h3>
+                <ion-button fill="clear" (click)="closeTimePicker()">
+                  <ion-icon name="close"></ion-icon>
+                </ion-button>
+              </div>
+              <div class="time-picker-content">
+                <ion-datetime 
+                  presentation="time" 
+                  [(ngModel)]="target_time"
+                  style="--background: transparent;">
+                </ion-datetime>
+              </div>
+              <div class="modal-footer">
+                <ion-button fill="outline" (click)="closeTimePicker()">Cancel</ion-button>
+                <ion-button (click)="confirmTime()">Confirm</ion-button>
+              </div>
+            </div>
+          </ng-template>
         </ion-modal>
       </ion-item>
 
@@ -75,13 +115,13 @@
           presentation="date"
           style="border: 2px solid #e9ecef; border-radius: 12px; padding: 12px 16px; background: #fff;">
         </ion-datetime>
-      </ion-item>
-
-      <ion-button 
+      </ion-item>      <ion-button 
         expand="block" 
         (click)="createHabit()"
+        [disabled]="isCreating || !title.trim()"
         style="border-radius: 12px; height: 48px; font-weight: 600; margin-top: 20px;">
-        Create Habit
+        <ion-spinner *ngIf="isCreating" name="crescent" style="margin-right: 8px;"></ion-spinner>
+        {{ isCreating ? 'Creating...' : 'Create Habit' }}
       </ion-button>
 
     </ion-card-content>

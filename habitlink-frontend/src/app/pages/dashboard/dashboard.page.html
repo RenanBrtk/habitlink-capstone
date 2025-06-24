@@ -1,9 +1,8 @@
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header>  <ion-toolbar color="primary">
     <ion-title>HabitLink</ion-title>
     <ion-buttons slot="end">
       <ion-avatar>
-        <div style="width: 40px; height: 40px; background: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+        <div style="width: 40px; height: 40px; background: var(--ion-color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
           {{ displayName.charAt(0).toUpperCase() }}
         </div>
       </ion-avatar>
@@ -56,37 +55,56 @@
         </ion-card>
       </ion-col>
     </ion-row>
-  </ion-grid>
-
-  <!-- Today's Habits -->
+  </ion-grid>  <!-- Enhanced Today's Habits -->
   <div style="margin-bottom: 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-      <h3 style="margin: 0; color: var(--dark-gray);">Today's Habits</h3>
-      <ion-button size="small" fill="clear" routerLink="/habits">View All</ion-button>
-    </div>    <div *ngFor="let habit of todaysHabits">
-      <ion-card class="habit-card" [routerLink]="['/habit', habit.habit_id]">
+      <h3 style="margin: 0; color: var(--ion-text-color); display: flex; align-items: center;">
+        <ion-icon name="today-outline" style="margin-right: 8px; color: var(--ion-color-primary);"></ion-icon>
+        Today's Habits
+      </h3>
+      <ion-button size="small" fill="clear" routerLink="/habits">
+        <ion-icon name="chevron-forward" slot="end"></ion-icon>
+        View All
+      </ion-button>
+    </div>
+
+    <!-- Scrollable habits container -->
+    <div class="habits-scroll-container">
+      <div *ngFor="let habit of todaysHabits" class="animate-in">
+        <ion-card class="habit-card" [class.completed]="habit.completed" [routerLink]="['/habit', habit.habit_id]">
         <ion-card-content style="padding: 16px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
+            <!-- Enhanced Color indicator with pulse animation -->
+            <div style="display: flex; align-items: center; margin-right: 12px;">
+              <div 
+                style="width: 4px; height: 60px; border-radius: 2px; margin-right: 8px;"
+                [style.background]="habit.color || 'var(--ion-color-primary)'">
+              </div>
+              <div *ngIf="!habit.completed" class="pulse-indicator"
+                   style="width: 8px; height: 8px; border-radius: 50%; background: var(--ion-color-primary); opacity: 0.6;">
+              </div>
+            </div>
+            
             <div style="flex: 1;">
               <div style="display: flex; align-items: center; margin-bottom: 4px;">
                 <ion-badge class="streak-badge" style="margin-right: 12px;">
+                  <ion-icon name="flame-outline" style="margin-right: 2px; font-size: 10px;"></ion-icon>
                   {{ habit.streak }} days
                 </ion-badge>
                 <h3 class="habit-title">{{ habit.title }}</h3>
               </div>
               <p class="habit-subtitle">{{ habit.frequency | titlecase }} • {{ habit.description }}</p>
             </div>
-            
-            <ion-button 
+              <ion-button 
               fill="clear" 
               shape="round" 
               size="large"
               [disabled]="habit.completed"
-              (click)="markHabitComplete(habit); $event.stopPropagation()">
+              (click)="markHabitComplete(habit); $event.stopPropagation()"
+              [color]="habit.completed ? 'success' : 'medium'">
               <ion-icon
                 slot="icon-only"
                 [name]="habit.completed ? 'checkmark-circle' : 'ellipse-outline'"
-                [color]="habit.completed ? 'success' : 'medium'"
                 style="font-size: 28px;">
               </ion-icon>
             </ion-button>
@@ -94,6 +112,7 @@
         </ion-card-content>
       </ion-card>
     </div>
+    </div> <!-- Close habits-scroll-container -->
   </div>
 
   <!-- Quick Actions -->
@@ -107,7 +126,7 @@
 
 <!-- Tab Bar -->
 <ion-footer>
-  <ion-toolbar style="--background: #f8f9fa;">
+  <ion-toolbar>
     <div style="display: flex; width: 100%; justify-content: space-around; align-items: center; padding: 8px 0;">
       
       <div class="tab-item active" style="display: flex; flex-direction: column; align-items: center; padding: 8px; cursor: pointer;">
