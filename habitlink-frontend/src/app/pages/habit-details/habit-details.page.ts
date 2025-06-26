@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController, ModalController } from '@ionic/angular';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-habit-details',
@@ -12,7 +13,8 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     IonicModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ],
   templateUrl: './habit-details.page.html',
   styleUrls: ['./habit-details.page.scss'],
@@ -23,7 +25,13 @@ export class HabitDetailsPage implements OnInit {
   habitId: string = '';
   completionRate: number = 0;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router, private alertController: AlertController) {}
+  constructor(
+    private route: ActivatedRoute, 
+    private http: HttpClient, 
+    private router: Router, 
+    private alertController: AlertController,
+    private modalController: ModalController
+  ) {}
   ngOnInit() {
     this.habitId = this.route.snapshot.paramMap.get('habit_id') || '';
     console.log('HabitDetailsPage initialized with habitId:', this.habitId);
@@ -147,6 +155,151 @@ performDelete() {
       console.error('Full error:', err);
     }
   });
+}  async editHabit() {
+    const alert = await this.alertController.create({
+      header: 'Edit Habit',
+      message: 'Update your habit details',
+      inputs: [
+        {
+          name: 'title',
+          type: 'text',
+          placeholder: 'Habit Title',
+          value: this.habit.title,
+          attributes: {
+            required: true
+          }
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+          placeholder: 'Description (optional)',
+          value: this.habit.description || ''
+        },
+        {
+          name: 'frequency',
+          type: 'text',
+          placeholder: 'Frequency: daily, weekly, monthly, or custom',
+          value: this.habit.frequency
+        },
+        {
+          name: 'frequency_value',
+          type: 'number',
+          placeholder: 'Frequency Value (1 for daily, 7 for weekly, etc.)',
+          value: this.habit.frequency_value?.toString() || '1',
+          min: 1
+        },
+        {
+          name: 'color',
+          type: 'text',
+          placeholder: 'Color (e.g., #007AFF)',
+          value: this.habit.color || '#007AFF'
+        },
+        {
+          name: 'target_time',
+          type: 'time',
+          placeholder: 'Target Time (optional)',
+          value: this.habit.target_time || ''
+        },
+        {
+          name: 'start_date',
+          type: 'date',
+          placeholder: 'Start Date',
+          value: this.habit.start_date
+        },
+        {
+          name: 'end_date',
+          type: 'date',
+          placeholder: 'End Date (optional)',
+          value: this.habit.end_date || ''
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Save Changes',
+          handler: (data) => {
+            if (!data.title || data.title.trim() === '') {
+              this.showErrorAlert('Habit title is required');
+              return false;
+            }
+            
+            const validFrequencies = ['daily', 'weekly', 'monthly', 'custom'];
+            if (!validFrequencies.includes(data.frequency.toLowerCase())) {
+              this.showErrorAlert('Frequency must be: daily, weekly, monthly, or custom');
+              return false;
+            }
+            
+            this.updateHabit(data);
+            return true;
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }  updateHabit(data: any) {
+    const token = localStorage.getItem('token');
+    
+    // Clean up and validate the data
+    const updateData: any = {
+      title: data.title.trim(),
+      description: data.description?.trim() || null,
+      frequency: data.frequency.toLowerCase().trim(),
+      frequency_value: parseInt(data.frequency_value) || 1,
+      color: data.color.trim() || '#007AFF',
+      start_date: data.start_date
+    };
+
+    // Optional fields
+    if (data.target_time && data.target_time.trim()) {
+      updateData.target_time = data.target_time.trim();
+    }
+    
+    if (data.end_date && data.end_date.trim()) {
+      updateData.end_date = data.end_date.trim();
+    }
+
+    console.log('Updating habit with data:', updateData);
+
+    this.http.put(`http://localhost:3000/api/habits/${this.habitId}`, updateData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }).subscribe({
+      next: (res) => {
+        console.log('Habit updated successfully:', res);
+        this.showSuccessAlert('Habit updated successfully!');
+        this.loadHabit(); // Reload the habit data
+        this.loadProgress(); // Reload progress data
+      },
+      error: (err) => {
+        console.error('Error updating habit:', err);
+        this.showErrorAlert('Failed to update habit. Please check your input and try again.');
+      }
+    });
+  }
+
+async showErrorAlert(message: string) {
+  const alert = await this.alertController.create({
+    header: 'Error',
+    message: message,
+    buttons: ['OK']
+  });
+  await alert.present();
+}
+
+async showSuccessAlert(message: string) {
+  const alert = await this.alertController.create({
+    header: 'Success',
+    message: message,
+    buttons: ['OK']
+  });
+  await alert.present();
 }
 
 }
