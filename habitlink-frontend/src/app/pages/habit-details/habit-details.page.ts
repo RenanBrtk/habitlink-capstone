@@ -5,6 +5,7 @@ import { IonicModule, AlertController, ModalController } from '@ionic/angular';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { EditHabitModalComponent } from '../../components/edit-habit-modal/edit-habit-modal.component';
 
 @Component({
   selector: 'app-habit-details',
@@ -156,91 +157,20 @@ performDelete() {
     }
   });
 }  async editHabit() {
-    const alert = await this.alertController.create({
-      header: 'Edit Habit',
-      message: 'Update your habit details',
-      inputs: [
-        {
-          name: 'title',
-          type: 'text',
-          placeholder: 'Habit Title',
-          value: this.habit.title,
-          attributes: {
-            required: true
-          }
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-          placeholder: 'Description (optional)',
-          value: this.habit.description || ''
-        },
-        {
-          name: 'frequency',
-          type: 'text',
-          placeholder: 'Frequency: daily, weekly, monthly, or custom',
-          value: this.habit.frequency
-        },
-        {
-          name: 'frequency_value',
-          type: 'number',
-          placeholder: 'Frequency Value (1 for daily, 7 for weekly, etc.)',
-          value: this.habit.frequency_value?.toString() || '1',
-          min: 1
-        },
-        {
-          name: 'color',
-          type: 'text',
-          placeholder: 'Color (e.g., #007AFF)',
-          value: this.habit.color || '#007AFF'
-        },
-        {
-          name: 'target_time',
-          type: 'time',
-          placeholder: 'Target Time (optional)',
-          value: this.habit.target_time || ''
-        },
-        {
-          name: 'start_date',
-          type: 'date',
-          placeholder: 'Start Date',
-          value: this.habit.start_date
-        },
-        {
-          name: 'end_date',
-          type: 'date',
-          placeholder: 'End Date (optional)',
-          value: this.habit.end_date || ''
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary'
-        },
-        {
-          text: 'Save Changes',
-          handler: (data) => {
-            if (!data.title || data.title.trim() === '') {
-              this.showErrorAlert('Habit title is required');
-              return false;
-            }
-            
-            const validFrequencies = ['daily', 'weekly', 'monthly', 'custom'];
-            if (!validFrequencies.includes(data.frequency.toLowerCase())) {
-              this.showErrorAlert('Frequency must be: daily, weekly, monthly, or custom');
-              return false;
-            }
-            
-            this.updateHabit(data);
-            return true;
-          }
-        }
-      ]
+    const modal = await this.modalController.create({
+      component: EditHabitModalComponent,
+      componentProps: {
+        habit: this.habit
+      }
     });
 
-    await alert.present();
+    modal.onDidDismiss().then((result) => {
+      if (result.role === 'save' && result.data) {
+        this.updateHabit(result.data);
+      }
+    });
+
+    return await modal.present();
   }  updateHabit(data: any) {
     const token = localStorage.getItem('token');
     
@@ -248,9 +178,9 @@ performDelete() {
     const updateData: any = {
       title: data.title.trim(),
       description: data.description?.trim() || null,
-      frequency: data.frequency.toLowerCase().trim(),
+      frequency: data.frequency || this.habit.frequency,
       frequency_value: parseInt(data.frequency_value) || 1,
-      color: data.color.trim() || '#007AFF',
+      color: data.color || this.habit.color,
       start_date: data.start_date
     };
 
