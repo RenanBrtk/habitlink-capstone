@@ -70,6 +70,18 @@
 
     <!-- Scrollable habits container -->
     <div class="habits-scroll-container">
+      <!-- No habits message -->
+      <div *ngIf="todaysHabits.length === 0" class="no-habits-message">
+        <ion-card style="text-align: center; padding: 24px;">
+          <ion-icon name="calendar-outline" style="font-size: 48px; color: var(--ion-color-medium); margin-bottom: 16px;"></ion-icon>
+          <h4 style="color: var(--ion-color-medium); margin: 0 0 8px 0;">No habits due today</h4>
+          <p style="color: var(--ion-color-medium); margin: 0; font-size: 14px;">
+            Great! You're all caught up. Check back tomorrow for your scheduled habits.
+          </p>
+        </ion-card>
+      </div>
+      
+      <!-- Habits list -->
       <div *ngFor="let habit of todaysHabits" class="animate-in">
         <ion-card class="habit-card" [class.completed]="habit.completed" [routerLink]="['/habit', habit.habit_id]">
         <ion-card-content style="padding: 16px;">

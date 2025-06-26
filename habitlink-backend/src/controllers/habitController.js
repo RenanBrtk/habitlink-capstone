@@ -205,3 +205,72 @@ exports.markHabitComplete = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+// Helper function to check if a habit is due today
+const isHabitDueToday = (habit) => {
+  const today = new Date();
+  const startDate = new Date(habit.start_date);
+  
+  // If habit hasn't started yet
+  if (today.toDateString() < startDate.toDateString()) {
+    return false;
+  }
+  
+  // If habit has ended
+  if (habit.end_date && today.toDateString() > new Date(habit.end_date).toDateString()) {
+    return false;
+  }
+  
+  // Calculate days since start (inclusive of start date)
+  const timeDiff = today.getTime() - startDate.getTime();
+  const daysSinceStart = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  
+  switch (habit.frequency) {
+    case 'daily':
+      return true; // Daily habits are always due if within date range
+    
+    case 'weekly':
+      // Check if today is the same day of week as start_date
+      return today.getDay() === startDate.getDay();
+    
+    case 'monthly':
+      // Check if today is the same date of month as start_date
+      const todayDate = today.getDate();
+      const startDateOfMonth = startDate.getDate();
+      const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+      
+      // Handle end-of-month cases (e.g., habit set for 31st but current month has only 30 days)
+      if (startDateOfMonth > lastDayOfMonth) {
+        return todayDate === lastDayOfMonth;
+      }
+      
+      return todayDate === startDateOfMonth;
+    
+    case 'custom':
+      // For custom frequency, check if it's due based on frequency_value (days interval)
+      if (!habit.frequency_value || habit.frequency_value <= 0) {
+        return false;
+      }
+      return daysSinceStart % habit.frequency_value === 0;
+    
+    default:
+      return false;
+  }
+};
+
+exports.getTodaysHabits = async (req, res) => {
+  try {
+    const userId = req.user.user_id;
+    const allHabits = await Habit.findAll({ 
+      where: { user_id: userId, is_active: true } 
+    });
+    
+    // Filter habits that are due today
+    const todaysHabits = allHabits.filter(habit => isHabitDueToday(habit));
+    
+    res.json(todaysHabits);
+  } catch (error) {
+    console.error('Error fetching today\'s habits:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

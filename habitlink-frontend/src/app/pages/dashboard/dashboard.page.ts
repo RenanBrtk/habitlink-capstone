@@ -61,10 +61,10 @@ export class DashboardPage implements OnInit {
   }
   loadTodaysHabits() {
     const token = localStorage.getItem('token');
-    this.http.get<any[]>('http://localhost:3000/api/habits', {
+    this.http.get<any[]>('http://localhost:3000/api/habits/today', {
       headers: { Authorization: `Bearer ${token}` }    }).subscribe({
       next: (habits) => {
-        console.log('Dashboard habits loaded:', habits); // Debug: check if colors are in the data
+        console.log('Dashboard today\'s habits loaded:', habits); // Debug: check if colors are in the data
         // Remove the slice limit to show all habits
         this.todaysHabits = habits.map(habit => ({
           ...habit,
@@ -79,7 +79,7 @@ export class DashboardPage implements OnInit {
           this.loadHabitProgress(habit);
         });
       },
-      error: (err) => console.error('Error loading habits:', err)
+      error: (err) => console.error('Error loading today\'s habits:', err)
     });
   }
 

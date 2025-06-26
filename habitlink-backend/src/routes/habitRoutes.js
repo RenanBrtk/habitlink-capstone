@@ -20,6 +20,7 @@ const authMiddleware = (req, res, next) => {
 
 // Routes
 router.get('/habits', authMiddleware, habitController.getHabits);
+router.get('/habits/today', authMiddleware, habitController.getTodaysHabits);
 router.post('/habits', authMiddleware, habitController.createHabit);
 router.put('/habits/:habit_id', authMiddleware, habitController.updateHabit);
 router.delete('/habits/:habit_id', authMiddleware, habitController.deleteHabit);
