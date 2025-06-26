@@ -258,6 +258,28 @@ ion-segment {
   }
 }
 
+/* Specific ion-select alignment fixes */
+ion-select {
+  .select-text {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 24px !important;
+    line-height: 1.5 !important;
+  }
+  
+  .select-placeholder {
+    display: flex !important;
+    align-items: center !important;
+    opacity: 0.6;
+  }
+  
+  .select-icon {
+    margin-left: auto !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+}
+
 /* Enhanced List Styles */
 .ion-list {
   background: var(--ion-item-background);

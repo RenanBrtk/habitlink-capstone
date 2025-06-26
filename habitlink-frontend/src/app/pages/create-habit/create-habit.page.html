@@ -39,15 +39,18 @@
         <ion-label position="stacked" style="margin-bottom: 8px; font-weight: 600; color: var(--dark-gray);">
           Frequency
         </ion-label>
-        <ion-select 
-          [(ngModel)]="frequency"
-          interface="popover"
-          style="border: 2px solid #e9ecef; border-radius: 12px; padding: 12px 16px; background: #fff;">
-          <ion-select-option value="daily">Daily</ion-select-option>
-          <ion-select-option value="weekly">Weekly</ion-select-option>
-          <ion-select-option value="monthly">Monthly</ion-select-option>
-          <ion-select-option value="custom">Custom</ion-select-option>
-        </ion-select>
+        <div class="frequency-select-wrapper" style="width: 100%;">
+          <ion-select 
+            [(ngModel)]="frequency"
+            interface="popover"
+            class="frequency-select"
+            placeholder="Select frequency">
+            <ion-select-option value="daily">Daily</ion-select-option>
+            <ion-select-option value="weekly">Weekly</ion-select-option>
+            <ion-select-option value="monthly">Monthly</ion-select-option>
+            <ion-select-option value="custom">Custom</ion-select-option>
+          </ion-select>
+        </div>
       </ion-item>
 
       <!-- Color Selection -->
