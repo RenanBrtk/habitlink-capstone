@@ -430,3 +430,37 @@ ion-segment {
     flex-shrink: 0;
   }
 }
+
+/* Mood Filter Styles - Override to fix horizontal scrolling */
+.mood-filters-container {
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+.mood-filters {
+  display: flex !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  gap: 8px !important;
+  padding-bottom: 12px !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch !important;
+  
+  &::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+  
+  ion-button {
+    flex-shrink: 0 !important;
+    min-width: max-content !important;
+    white-space: nowrap !important;
+    margin-right: 0 !important;
+    
+    &:last-child {
+      margin-right: 16px !important;
+    }
+  }
+}

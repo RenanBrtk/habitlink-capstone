@@ -35,38 +35,51 @@
 }
 
 .search-filter-section {
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 100%;
+  
   ion-searchbar {
     --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     --border-radius: 16px;
     margin-bottom: 16px;
   }
 
+  .mood-filters-container {
+    width: 100%;
+    position: relative;
+    margin-bottom: 12px;
+  }
+
   .mood-filters {
-    display: flex;
+    display: flex !important;
     gap: 8px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 0 0 8px 0;
+    overflow-x: scroll !important;
+    overflow-y: hidden !important;
+    padding-bottom: 12px;
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
     width: 100%;
     
     &::-webkit-scrollbar {
-      display: none;
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
     }
 
     ion-button {
       --border-radius: 20px;
       --padding-start: 12px;
       --padding-end: 12px;
-      height: 36px;
+      --height: 36px;
       font-size: 12px;
       font-weight: 500;
-      min-width: fit-content;
-      flex-shrink: 0;
+      min-width: max-content !important;
+      flex: 0 0 auto !important;
       white-space: nowrap;
       transition: all 0.2s ease;
+      text-transform: none;
       
       ion-icon {
         font-size: 14px;
@@ -75,6 +88,10 @@
       
       &:hover {
         transform: translateY(-1px);
+      }
+      
+      &:last-child {
+        margin-right: 16px;
       }
     }
   }
@@ -226,4 +243,17 @@
 .mood-bg-difficult, .mood-bg-challenging {
   background: linear-gradient(90deg, rgba(220, 53, 69, 0.1) 0%, var(--ion-card-background) 15%);
   border-left: 4px solid var(--ion-color-danger);
+}
+
+// Ensure the content doesn't cause horizontal overflow
+ion-content {
+  overflow-x: hidden;
+  
+  // Override default padding for better control
+  &.ion-padding {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: 20px;
+    --padding-bottom: 20px;
+  }
 }
