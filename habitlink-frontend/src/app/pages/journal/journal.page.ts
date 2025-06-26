@@ -44,13 +44,10 @@ export class JournalPage implements OnInit {
     private router: Router
   ) {}
   ngOnInit() {
-    console.log('Loading journal page');
     this.loadJournalData();
   }
 
   ionViewWillEnter() {
-    console.log('Journal ionViewWillEnter - refreshing data');
-    console.log('Current moodOptions before refresh:', this.moodOptions);
     this.loadJournalData();
   }
 
@@ -68,30 +65,23 @@ export class JournalPage implements OnInit {
       next: (stats) => {
         this.stats = stats;
       },
-      error: (err) => console.error('Error loading journal stats:', err)
+      error: (err) => {}
     });
   }
 
   loadUniqueMoods() {
     const token = localStorage.getItem('token');
-    console.log('Loading unique moods with token:', token ? 'token exists' : 'no token');
     this.http.get<any>('http://localhost:3000/api/journal/moods', {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: (response) => {
-        console.log('Raw response from moods endpoint:', response);
-        // Create mood options from unique moods found in user's entries
         this.moodOptions = response.moods.map((mood: string) => {
           const moodConfig = this.allMoodOptions.find(option => option.value === mood);
           return moodConfig || { value: mood, label: mood.charAt(0).toUpperCase() + mood.slice(1), icon: 'help-outline', color: 'medium' };
         });
-        console.log('Processed mood options:', this.moodOptions);
       },
       error: (err) => {
-        console.error('Error loading unique moods:', err);
-        // Fallback: if user has no entries yet, show all possible moods so they can see what options are available
         this.moodOptions = this.allMoodOptions;
-        console.log('Using all mood options as fallback:', this.moodOptions);
       }
     });
   }
@@ -135,7 +125,7 @@ export class JournalPage implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error loading journal entries:', err);
+        
         this.isLoading = false;
       }
     });
@@ -206,7 +196,7 @@ export class JournalPage implements OnInit {
     try {
       return JSON.parse(tags);
     } catch (error) {
-      console.error('Error parsing tags:', error);
+      
       return [];
     }
   }

@@ -73,20 +73,18 @@ export class ProfilePage implements OnInit {
   }
 
   ionViewWillEnter() {
-    console.log('Profile ionViewWillEnter - refreshing data');
     this.loadUserData();
     this.loadUserStats();
   }
+  
   loadUserData() {
     this.isLoading = true;
     const token = localStorage.getItem('token');
     
-    // Fetch fresh user data from the backend
     this.http.get<any>('http://localhost:3000/api/user/profile', {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: (user) => {
-        console.log('Received user data:', user);
         this.user = user;
         this.editForm = {
           first_name: this.user.first_name || '',
@@ -95,16 +93,10 @@ export class ProfilePage implements OnInit {
           timezone: this.user.timezone || 'UTC'
         };
         this.isLoading = false;
-        
-        // Calculate days active after user data is loaded
         this.calculateDaysActive();
-        
-        // Update localStorage with fresh user data
         localStorage.setItem('user', JSON.stringify(user));
       },
       error: (err) => {
-        console.error('Error loading user profile:', err);
-        // Fallback to localStorage data if API fails
         const userData = localStorage.getItem('user');
         if (userData) {
           this.user = JSON.parse(userData);
@@ -114,7 +106,6 @@ export class ProfilePage implements OnInit {
             display_name: this.user.display_name || '',
             timezone: this.user.timezone || 'UTC'
           };
-          // Calculate days active with fallback data
           this.calculateDaysActive();
         }
         this.isLoading = false;
@@ -125,42 +116,28 @@ export class ProfilePage implements OnInit {
   loadUserStats() {
     const token = localStorage.getItem('token');
     
-    // Use the new accurate stats endpoint
     this.http.get<any>('http://localhost:3000/api/habits/stats', {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: (habitStats) => {
         this.stats.totalHabits = habitStats.totalHabits || 0;
-        this.stats.activeHabits = habitStats.totalHabits || 0; // All habits returned are active
+        this.stats.activeHabits = habitStats.totalHabits || 0;
         this.stats.longestStreak = habitStats.bestStreak || 0;
         this.stats.averageCompletion = habitStats.successRate || 0;
-        
-        console.log('Profile stats updated:', this.stats);
-        console.log('Detailed breakdown:', {
-          totalPossibleDays: habitStats.totalPossibleDays,
-          totalDaysCompleted: habitStats.totalDaysCompleted,
-          successRate: habitStats.successRate
-        });
       },
       error: (err) => {
-        console.error('Error loading habit stats:', err);
-        // Fallback to loading individual stats
         this.loadFallbackStats();
       }
     });
 
-    // Load journal stats
     this.http.get<any>('http://localhost:3000/api/journal/stats', {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: (journalStats) => {
         this.stats.totalJournalEntries = journalStats.totalEntries || 0;
       },
-      error: (err) => console.error('Error loading journal stats:', err)
+      error: (err) => {}
     });
-
-    // Calculate days active based on user creation date
-    // this.calculateDaysActive(); // Moved to after user data is loaded
   }
 
   loadFallbackStats() {
@@ -177,7 +154,9 @@ export class ProfilePage implements OnInit {
         // Load detailed stats for each habit
         this.loadDetailedStats(habits);
       },
-      error: (err) => console.error('Error loading habits for stats:', err)
+      error: () => {
+        // Failed to load habits for stats
+      }
     });
   }
 
@@ -230,18 +209,13 @@ export class ProfilePage implements OnInit {
   calculateDaysActive() {
     try {
       if (!this.user.created_at) {
-        console.log('No created_at date found, using fallback calculation');
-        // Fallback: assume user joined recently (7 days ago) if no creation date
         this.stats.daysActive = 7;
         return;
       }
 
       const createdDate = new Date(this.user.created_at);
       
-      // Validate that the date is valid
       if (isNaN(createdDate.getTime())) {
-        console.log('Invalid created_at date, using fallback calculation');
-        // Fallback: assume user joined recently if invalid date
         this.stats.daysActive = 7;
         return;
       }
@@ -250,13 +224,8 @@ export class ProfilePage implements OnInit {
       const diffTime = Math.abs(today.getTime() - createdDate.getTime());
       const daysDiff = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
-      // Ensure we have at least 1 day active (user joined today)
       this.stats.daysActive = Math.max(1, daysDiff);
-      
-      console.log('Calculated days active:', this.stats.daysActive, 'from created_at:', this.user.created_at);
     } catch (error) {
-      console.error('Error calculating days active:', error);
-      // Fallback value
       this.stats.daysActive = 1;
     }
   }
@@ -267,7 +236,6 @@ export class ProfilePage implements OnInit {
 
   cancelEditing() {
     this.isEditing = false;
-    // Reset form to original values
     this.editForm = {
       first_name: this.user.first_name || '',
       last_name: this.user.last_name || '',
@@ -275,6 +243,7 @@ export class ProfilePage implements OnInit {
       timezone: this.user.timezone || 'UTC'
     };
   }
+  
   async saveProfile() {
     if (!this.editForm.first_name.trim() || !this.editForm.last_name.trim()) {
       this.showToast('First name and last name are required', 'warning');
@@ -284,7 +253,6 @@ export class ProfilePage implements OnInit {
     this.isSaving = true;
     const token = localStorage.getItem('token');
 
-    // Update display_name if empty
     const profileData = {
       ...this.editForm,
       display_name: this.editForm.display_name || `${this.editForm.first_name} ${this.editForm.last_name}`
@@ -302,7 +270,6 @@ export class ProfilePage implements OnInit {
         await this.showToast('Profile updated successfully!', 'success');
       },
       error: async (err) => {
-        console.error('Error updating profile:', err);
         this.isSaving = false;
         await this.showToast('Failed to update profile. Please try again.', 'danger');
       }

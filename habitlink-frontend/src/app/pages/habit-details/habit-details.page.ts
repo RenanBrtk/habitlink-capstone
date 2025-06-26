@@ -35,8 +35,6 @@ export class HabitDetailsPage implements OnInit {
   ) {}
   ngOnInit() {
     this.habitId = this.route.snapshot.paramMap.get('habit_id') || '';
-    console.log('HabitDetailsPage initialized with habitId:', this.habitId);
-    console.log('Route params:', this.route.snapshot.paramMap);
     this.loadHabit();
     this.loadProgress();
   }
@@ -51,9 +49,7 @@ export class HabitDetailsPage implements OnInit {
       next: (res) => {
         this.habit = res;
       },
-      error: (err) => {
-        console.error('Error loading habit:', err);
-      }
+      error: (err) => {}
     });
   }
   loadProgress() {
@@ -67,9 +63,7 @@ export class HabitDetailsPage implements OnInit {
         this.progress = res;
         this.calculateCompletionRate();
       },
-      error: (err) => {
-        console.error('Error loading progress:', err);
-      }
+      error: (err) => {}
     });
   }
 
@@ -82,27 +76,20 @@ export class HabitDetailsPage implements OnInit {
       this.completionRate = 0;
     }
   }  markComplete() {
-  const token = localStorage.getItem('token');
-  this.http.post(`http://localhost:3000/api/habits/${this.habitId}/complete`, {}, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }).subscribe({
-    next: (res) => {
-      console.log('Marked complete:', res);
-      this.loadProgress();
-    },
-    error: (err) => {
-      console.error('Error marking complete:', err);
-    }
-  });
-}
+    const token = localStorage.getItem('token');
+    this.http.post(`http://localhost:3000/api/habits/${this.habitId}/complete`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).subscribe({
+      next: (res) => {
+        this.loadProgress();
+      },
+      error: (err) => {}
+    });
+  }
 
 async deleteHabit() {
-  console.log('Delete button clicked!');
-  console.log('Current habit:', this.habit);
-  console.log('Habit ID:', this.habitId);
-  
   const alert = await this.alertController.create({
     header: 'Delete Habit',
     message: `Are you sure you want to delete "${this.habit.title}"? This action cannot be undone.`,
@@ -110,15 +97,12 @@ async deleteHabit() {
       {
         text: 'Cancel',
         role: 'cancel',
-        handler: () => {
-          console.log('Delete cancelled');
-        }
+        handler: () => {}
       },
       {
         text: 'Delete',
         role: 'destructive',
         handler: () => {
-          console.log('Delete confirmed');
           this.performDelete();
         }
       }
@@ -130,13 +114,8 @@ async deleteHabit() {
 
 performDelete() {
   const token = localStorage.getItem('token');
-  console.log('performDelete called');
-  console.log('Token:', token ? 'Present' : 'Missing');
-  console.log('Habit ID for deletion:', this.habitId);
-  console.log('DELETE URL:', `http://localhost:3000/api/habits/${this.habitId}`);
   
   if (!this.habitId) {
-    console.error('No habit ID available for deletion');
     return;
   }
   
@@ -146,15 +125,9 @@ performDelete() {
     }
   }).subscribe({
     next: (res) => {
-      console.log('Habit deleted successfully:', res);
       this.router.navigate(['/all-habits']);
     },
-    error: (err) => {
-      console.error('Error deleting habit:', err);
-      console.error('Status:', err.status);
-      console.error('Message:', err.message);
-      console.error('Full error:', err);
-    }
+    error: (err) => {}
   });
 }  async editHabit() {
     const modal = await this.modalController.create({
@@ -193,8 +166,6 @@ performDelete() {
       updateData.end_date = data.end_date.trim();
     }
 
-    console.log('Updating habit with data:', updateData);
-
     this.http.put(`http://localhost:3000/api/habits/${this.habitId}`, updateData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -202,13 +173,11 @@ performDelete() {
       }
     }).subscribe({
       next: (res) => {
-        console.log('Habit updated successfully:', res);
         this.showSuccessAlert('Habit updated successfully!');
-        this.loadHabit(); // Reload the habit data
-        this.loadProgress(); // Reload progress data
+        this.loadHabit();
+        this.loadProgress();
       },
       error: (err) => {
-        console.error('Error updating habit:', err);
         this.showErrorAlert('Failed to update habit. Please check your input and try again.');
       }
     });

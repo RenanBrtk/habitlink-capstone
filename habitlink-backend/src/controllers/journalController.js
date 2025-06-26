@@ -54,7 +54,6 @@ exports.getJournalEntries = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching journal entries:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -74,7 +73,6 @@ exports.getJournalEntryById = async (req, res) => {
 
     res.json(entry);
   } catch (error) {
-    console.error('Error fetching journal entry:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -99,7 +97,6 @@ exports.createJournalEntry = async (req, res) => {
 
     res.status(201).json(newEntry);
   } catch (error) {
-    console.error('Error creating journal entry:', error);
     if (error.name === 'SequelizeUniqueConstraintError') {
       res.status(400).json({ message: 'Entry for this date already exists' });
     } else {
@@ -130,7 +127,6 @@ exports.updateJournalEntry = async (req, res) => {
 
     res.json(entry);
   } catch (error) {
-    console.error('Error updating journal entry:', error);
     if (error.name === 'SequelizeUniqueConstraintError') {
       res.status(400).json({ message: 'Entry for this date already exists' });
     } else {
@@ -155,7 +151,6 @@ exports.deleteJournalEntry = async (req, res) => {
     await entry.destroy();
     res.json({ message: 'Journal entry deleted successfully' });
   } catch (error) {
-    console.error('Error deleting journal entry:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -242,14 +237,12 @@ exports.getJournalStats = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching journal stats:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
 exports.getUniqueMoods = async (req, res) => {
   try {
-    console.log('getUniqueMoods API called for user:', req.user.user_id);
     const userId = req.user.user_id;
     
     const uniqueMoods = await JournalEntry.findAll({
@@ -260,11 +253,9 @@ exports.getUniqueMoods = async (req, res) => {
     });
 
     const moods = uniqueMoods.map(entry => entry.mood).filter(mood => mood); // Filter out null/empty moods
-    console.log('Found unique moods:', moods);
     
     res.json({ moods });
   } catch (error) {
-    console.error('Error fetching unique moods:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

@@ -40,9 +40,6 @@ export class DashboardPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // This method is called every time the page is entered
-    // It will refresh the data when navigating back from habit details
-    console.log('Dashboard ionViewWillEnter - refreshing data');
     this.loadTodaysHabits();
     this.loadStats();
   }
@@ -64,22 +61,17 @@ export class DashboardPage implements OnInit {
     this.http.get<any[]>('http://localhost:3000/api/habits/today', {
       headers: { Authorization: `Bearer ${token}` }    }).subscribe({
       next: (habits) => {
-        console.log('Dashboard today\'s habits loaded:', habits); // Debug: check if colors are in the data
-        // Remove the slice limit to show all habits
         this.todaysHabits = habits.map(habit => ({
           ...habit,
           completed: false,
           streak: 0
         }));
         
-        console.log('Today\'s habits with colors:', this.todaysHabits); // Debug: check colors after mapping
-        
-        // Load completion status for each habit
         this.todaysHabits.forEach(habit => {
           this.loadHabitProgress(habit);
         });
       },
-      error: (err) => console.error('Error loading today\'s habits:', err)
+      error: (err) => {}
     });
   }
 
@@ -110,16 +102,8 @@ export class DashboardPage implements OnInit {
           successRate: stats.successRate || 0,
           totalDays: stats.totalDaysCompleted || 0
         };
-        console.log('Updated stats:', this.stats);
-        console.log('Stats breakdown:', {
-          totalPossibleDays: stats.totalPossibleDays,
-          totalDaysCompleted: stats.totalDaysCompleted,
-          successRate: stats.successRate
-        });
       },
       error: (err) => {
-        console.error('Error loading stats:', err);
-        // Fallback to default stats
         this.stats = { currentStreak: 0, bestStreak: 0, successRate: 0, totalDays: 0 };
       }
     });
@@ -134,7 +118,9 @@ export class DashboardPage implements OnInit {
         habit.completed = true;
         this.loadStats(); // Refresh stats
       },
-      error: (err) => console.error('Error marking complete:', err)
+      error: () => {
+        // Failed to mark habit as complete
+      }
     });
   }
 

@@ -10,7 +10,6 @@ exports.getHabits = async (req, res) => {
     const habits = await Habit.findAll({ where: { user_id: userId, is_active: true } });
     res.json(habits);
   } catch (error) {
-    console.error('Error fetching habits:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -35,7 +34,6 @@ exports.createHabit = async (req, res) => {
 
     res.status(201).json(newHabit);
   } catch (error) {
-    console.error('Error creating habit:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -51,7 +49,6 @@ exports.updateHabit = async (req, res) => {
     await habit.update(req.body);
     res.json(habit);
   } catch (error) {
-    console.error('Error updating habit:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -67,7 +64,6 @@ exports.deleteHabit = async (req, res) => {
     await habit.destroy();
     res.json({ message: 'Habit deleted' });
   } catch (error) {
-    console.error('Error deleting habit:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -88,7 +84,6 @@ exports.getHabitById = async (req, res) => {
     // (Optional) later to also return streak, habit logs, etc.
     res.json(habit);
   } catch (error) {
-    console.error('Error fetching habit:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -135,7 +130,6 @@ exports.getHabitProgress = async (req, res) => {
       logs,
     });
   } catch (error) {
-    console.error('Progress route error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
@@ -201,7 +195,6 @@ exports.markHabitComplete = async (req, res) => {
 
     res.json({ message: 'Habit marked complete!', log, streak });
   } catch (error) {
-    console.error('Complete error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
@@ -270,7 +263,6 @@ exports.getTodaysHabits = async (req, res) => {
     
     res.json(todaysHabits);
   } catch (error) {
-    console.error('Error fetching today\'s habits:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -368,7 +360,6 @@ exports.getUserStats = async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Error fetching user stats:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

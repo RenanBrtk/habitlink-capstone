@@ -23,9 +23,6 @@ export class AllHabitsPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // Method is called every time the page is entered
-    // It will refresh the habits list when navigating back from habit details
-    console.log('All-habits ionViewWillEnter - refreshing habits');
     this.loadHabits();
   }
 
@@ -40,7 +37,7 @@ export class AllHabitsPage implements OnInit {
         this.habits = res;
       },
       error: (err) => {
-        console.error('Error loading habits:', err);
+        
       }
     });
   }

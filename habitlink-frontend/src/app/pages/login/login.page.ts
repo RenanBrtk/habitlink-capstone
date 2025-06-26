@@ -29,7 +29,7 @@ export class LoginPage {
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        console.error(err);
+        
         this.error = 'Invalid email or password';
       },
     });

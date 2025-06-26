@@ -54,7 +54,7 @@ export class JournalDetailPage implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error loading journal entry:', err);
+        
         this.isLoading = false;
         this.router.navigate(['/journal']);
       }
@@ -132,7 +132,7 @@ export class JournalDetailPage implements OnInit {
         this.router.navigate(['/journal']);
       },
       error: (err) => {
-        console.error('Error deleting journal entry:', err);
+        
       }
     });
   }

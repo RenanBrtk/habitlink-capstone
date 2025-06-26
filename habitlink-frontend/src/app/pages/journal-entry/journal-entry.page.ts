@@ -65,7 +65,7 @@ export class JournalEntryPage implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error loading journal entry:', err);
+        
         this.showToast('Failed to load journal entry', 'danger');
         this.isLoading = false;
         this.router.navigate(['/journal']);
@@ -104,7 +104,7 @@ export class JournalEntryPage implements OnInit {
         this.router.navigate(['/journal']);
       },
       error: async (err) => {
-        console.error('Error saving journal entry:', err);
+        
         this.isSaving = false;
         await this.showToast('Failed to save journal entry', 'danger');
       }
@@ -146,7 +146,7 @@ export class JournalEntryPage implements OnInit {
         this.router.navigate(['/journal']);
       },
       error: async (err) => {
-        console.error('Error deleting journal entry:', err);
+        
         await this.showToast('Failed to delete journal entry', 'danger');
       }
     });

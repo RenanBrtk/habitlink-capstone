@@ -27,9 +27,6 @@ export class HabitsPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // This method is called every time the page is entered
-    // It will refresh the habits when navigating back from create habit
-    console.log('Habits ionViewWillEnter - refreshing habits');
     this.loadHabits();
   }
 
@@ -38,18 +35,15 @@ export class HabitsPage implements OnInit {
     this.http.get<any[]>('http://localhost:3000/api/habits', {
       headers: {
         Authorization: `Bearer ${token}`
-      }    }).subscribe({
+      }
+    }).subscribe({
       next: (res) => {
-        console.log('Habits loaded:', res); 
         this.habits = res.map(habit => ({
           ...habit,
           streak: null,
           completedToday: false
         }));
 
-        console.log('Habits with colors:', this.habits); 
-
-        
         this.habits.forEach(habit => {
           this.http.get<any>(`http://localhost:3000/api/habits/${habit.habit_id}/progress`, {
             headers: {
@@ -75,8 +69,8 @@ export class HabitsPage implements OnInit {
         Authorization: `Bearer ${token}`
       }
     }).subscribe({
-      next: () => this.loadHabits(), // Refresh state
-      error: (err) => console.error('Complete error:', err)
+      next: () => this.loadHabits(),
+      error: (err) => {}
     });
   }
 

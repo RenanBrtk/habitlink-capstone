@@ -15,7 +15,6 @@ exports.getUserProfile = async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    console.error('Error fetching user profile:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -46,7 +45,6 @@ exports.updateUserProfile = async (req, res) => {
 
     res.json(updatedUser);
   } catch (error) {
-    console.error('Error updating user profile:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

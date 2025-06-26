@@ -38,7 +38,7 @@ export class RegisterPage {
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        console.error(err);
+        
         this.error = 'Registration failed';
       },
     });
