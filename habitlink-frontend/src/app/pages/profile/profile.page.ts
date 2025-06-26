@@ -86,6 +86,7 @@ export class ProfilePage implements OnInit {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: (user) => {
+        console.log('Received user data:', user);
         this.user = user;
         this.editForm = {
           first_name: this.user.first_name || '',
@@ -94,6 +95,9 @@ export class ProfilePage implements OnInit {
           timezone: this.user.timezone || 'UTC'
         };
         this.isLoading = false;
+        
+        // Calculate days active after user data is loaded
+        this.calculateDaysActive();
         
         // Update localStorage with fresh user data
         localStorage.setItem('user', JSON.stringify(user));
@@ -110,6 +114,8 @@ export class ProfilePage implements OnInit {
             display_name: this.user.display_name || '',
             timezone: this.user.timezone || 'UTC'
           };
+          // Calculate days active with fallback data
+          this.calculateDaysActive();
         }
         this.isLoading = false;
       }
@@ -154,7 +160,7 @@ export class ProfilePage implements OnInit {
     });
 
     // Calculate days active based on user creation date
-    this.calculateDaysActive();
+    // this.calculateDaysActive(); // Moved to after user data is loaded
   }
 
   loadFallbackStats() {
@@ -222,10 +228,37 @@ export class ProfilePage implements OnInit {
   }
 
   calculateDaysActive() {
-    const createdDate = new Date(this.user.created_at);
-    const today = new Date();
-    const diffTime = Math.abs(today.getTime() - createdDate.getTime());
-    this.stats.daysActive = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    try {
+      if (!this.user.created_at) {
+        console.log('No created_at date found, using fallback calculation');
+        // Fallback: assume user joined recently (7 days ago) if no creation date
+        this.stats.daysActive = 7;
+        return;
+      }
+
+      const createdDate = new Date(this.user.created_at);
+      
+      // Validate that the date is valid
+      if (isNaN(createdDate.getTime())) {
+        console.log('Invalid created_at date, using fallback calculation');
+        // Fallback: assume user joined recently if invalid date
+        this.stats.daysActive = 7;
+        return;
+      }
+
+      const today = new Date();
+      const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+      const daysDiff = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      // Ensure we have at least 1 day active (user joined today)
+      this.stats.daysActive = Math.max(1, daysDiff);
+      
+      console.log('Calculated days active:', this.stats.daysActive, 'from created_at:', this.user.created_at);
+    } catch (error) {
+      console.error('Error calculating days active:', error);
+      // Fallback value
+      this.stats.daysActive = 1;
+    }
   }
 
   startEditing() {
