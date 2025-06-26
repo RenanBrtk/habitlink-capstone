@@ -246,3 +246,25 @@ exports.getJournalStats = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.getUniqueMoods = async (req, res) => {
+  try {
+    console.log('getUniqueMoods API called for user:', req.user.user_id);
+    const userId = req.user.user_id;
+    
+    const uniqueMoods = await JournalEntry.findAll({
+      where: { user_id: userId },
+      attributes: ['mood'],
+      group: ['mood'],
+      raw: true
+    });
+
+    const moods = uniqueMoods.map(entry => entry.mood).filter(mood => mood); // Filter out null/empty moods
+    console.log('Found unique moods:', moods);
+    
+    res.json({ moods });
+  } catch (error) {
+    console.error('Error fetching unique moods:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

@@ -21,6 +21,7 @@ const authMiddleware = (req, res, next) => {
 // Journal routes
 router.get('/journal', authMiddleware, journalController.getJournalEntries);
 router.get('/journal/stats', authMiddleware, journalController.getJournalStats);
+router.get('/journal/moods', authMiddleware, journalController.getUniqueMoods);
 router.get('/journal/:entry_id', authMiddleware, journalController.getJournalEntryById);
 router.post('/journal', authMiddleware, journalController.createJournalEntry);
 router.put('/journal/:entry_id', authMiddleware, journalController.updateJournalEntry);
