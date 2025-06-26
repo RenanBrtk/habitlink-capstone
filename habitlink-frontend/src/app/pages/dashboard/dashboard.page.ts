@@ -98,53 +98,29 @@ export class DashboardPage implements OnInit {
     });
   }
   loadStats() {
-    // Calculate stats from habits data
+    // Use the new stats endpoint for accurate calculations
     const token = localStorage.getItem('token');
-    this.http.get<any[]>('http://localhost:3000/api/habits', {
+    this.http.get<any>('http://localhost:3000/api/habits/stats', {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
-      next: (habits) => {
-        if (habits.length === 0) {
-          this.stats = { currentStreak: 0, bestStreak: 0, successRate: 0, totalDays: 0 };
-          return;
-        }
-
-        let totalCompletedDays = 0;
-        let totalLogEntries = 0;
-        let totalCurrentStreaks = 0;
-        let maxStreak = 0;
-        let habitsProcessed = 0;
-        
-        habits.forEach(habit => {
-          this.http.get<any>(`http://localhost:3000/api/habits/${habit.habit_id}/progress`, {
-            headers: { Authorization: `Bearer ${token}` }
-          }).subscribe({
-            next: (progress) => {
-              const currentStreak = progress.streak?.current_streak || 0;
-              const longestStreak = progress.streak?.longest_streak || 0;
-              
-              // Count completed days from logs
-              const completedDays = progress.logs?.filter((log: any) => log.completed).length || 0;
-              const totalLogs = progress.logs?.length || 0;
-              
-              totalCompletedDays += completedDays;
-              totalLogEntries += totalLogs;
-              totalCurrentStreaks += currentStreak;
-              maxStreak = Math.max(maxStreak, longestStreak);
-              habitsProcessed++;
-              
-              // Update stats when all habits are processed
-              if (habitsProcessed === habits.length) {
-                this.stats = {
-                  currentStreak: Math.round(totalCurrentStreaks / habits.length), // Average current streak
-                  bestStreak: maxStreak, // Highest streak across all habits
-                  successRate: totalLogEntries > 0 ? Math.round((totalCompletedDays / totalLogEntries) * 100) : 0, // Overall completion rate
-                  totalDays: totalCompletedDays // Total days completed across all habits
-                };
-              }
-            }
-          });
+      next: (stats) => {
+        this.stats = {
+          currentStreak: stats.currentStreak || 0,
+          bestStreak: stats.bestStreak || 0,
+          successRate: stats.successRate || 0,
+          totalDays: stats.totalDaysCompleted || 0
+        };
+        console.log('Updated stats:', this.stats);
+        console.log('Stats breakdown:', {
+          totalPossibleDays: stats.totalPossibleDays,
+          totalDaysCompleted: stats.totalDaysCompleted,
+          successRate: stats.successRate
         });
+      },
+      error: (err) => {
+        console.error('Error loading stats:', err);
+        // Fallback to default stats
+        this.stats = { currentStreak: 0, bestStreak: 0, successRate: 0, totalDays: 0 };
       }
     });
   }

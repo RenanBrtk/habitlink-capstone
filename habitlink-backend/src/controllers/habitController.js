@@ -274,3 +274,101 @@ exports.getTodaysHabits = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.getUserStats = async (req, res) => {
+  try {
+    const userId = req.user.user_id;
+    
+    // Get all user habits
+    const habits = await Habit.findAll({ 
+      where: { user_id: userId, is_active: true } 
+    });
+    
+    if (habits.length === 0) {
+      return res.json({
+        totalHabits: 0,
+        currentStreak: 0,
+        bestStreak: 0,
+        successRate: 0,
+        totalDaysCompleted: 0,
+        totalPossibleDays: 0
+      });
+    }
+
+    let totalCompletedDays = 0;
+    let totalPossibleDays = 0;
+    let totalCurrentStreaks = 0;
+    let maxStreak = 0;
+    
+    // Get all streaks for the user
+    const streaks = await Streak.findAll({
+      where: { user_id: userId }
+    });
+    
+    // Get all logs for the user (not limited to 30 days)
+    const logs = await HabitLog.findAll({
+      where: { user_id: userId },
+      order: [['log_date', 'ASC']]
+    });
+    
+    // Calculate stats for each habit
+    for (const habit of habits) {
+      const habitStreak = streaks.find(s => s.habit_id === habit.habit_id);
+      const habitLogs = logs.filter(log => log.habit_id === habit.habit_id);
+      
+      // Calculate current streak and max streak
+      const currentStreak = habitStreak?.current_streak || 0;
+      const longestStreak = habitStreak?.longest_streak || 0;
+      
+      totalCurrentStreaks += currentStreak;
+      maxStreak = Math.max(maxStreak, longestStreak);
+      
+      // Count completed days
+      const completedDays = habitLogs.filter(log => log.completed).length;
+      totalCompletedDays += completedDays;
+      
+      // Calculate possible days based on habit frequency and start date
+      const startDate = new Date(habit.start_date);
+      const today = new Date();
+      const endDate = habit.end_date ? new Date(habit.end_date) : today;
+      
+      const daysSinceStart = Math.floor((Math.min(today, endDate) - startDate) / (1000 * 60 * 60 * 24)) + 1;
+      
+      let possibleDays = 0;
+      switch (habit.frequency) {
+        case 'daily':
+          possibleDays = daysSinceStart;
+          break;
+        case 'weekly':
+          possibleDays = Math.floor(daysSinceStart / 7) + (daysSinceStart % 7 >= (startDate.getDay() === today.getDay() ? 1 : 0) ? 1 : 0);
+          break;
+        case 'monthly':
+          const monthsDiff = (today.getFullYear() - startDate.getFullYear()) * 12 + (today.getMonth() - startDate.getMonth());
+          possibleDays = monthsDiff + (today.getDate() >= startDate.getDate() ? 1 : 0);
+          break;
+        case 'custom':
+          possibleDays = Math.floor(daysSinceStart / (habit.frequency_value || 1)) + 1;
+          break;
+      }
+      
+      totalPossibleDays += Math.max(possibleDays, 0);
+    }
+    
+    // Calculate final stats
+    const avgCurrentStreak = habits.length > 0 ? Math.round(totalCurrentStreaks / habits.length) : 0;
+    const successRate = totalPossibleDays > 0 ? Math.round((totalCompletedDays / totalPossibleDays) * 100) : 0;
+    
+    res.json({
+      totalHabits: habits.length,
+      currentStreak: avgCurrentStreak,
+      bestStreak: maxStreak,
+      successRate: Math.min(successRate, 100), // Cap at 100%
+      totalDaysCompleted: totalCompletedDays,
+      totalPossibleDays: totalPossibleDays
+    });
+    
+  } catch (error) {
+    console.error('Error fetching user stats:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

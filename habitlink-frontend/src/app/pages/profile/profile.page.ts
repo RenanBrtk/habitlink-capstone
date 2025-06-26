@@ -119,7 +119,48 @@ export class ProfilePage implements OnInit {
   loadUserStats() {
     const token = localStorage.getItem('token');
     
-    // Load habits stats
+    // Use the new accurate stats endpoint
+    this.http.get<any>('http://localhost:3000/api/habits/stats', {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: (habitStats) => {
+        this.stats.totalHabits = habitStats.totalHabits || 0;
+        this.stats.activeHabits = habitStats.totalHabits || 0; // All habits returned are active
+        this.stats.longestStreak = habitStats.bestStreak || 0;
+        this.stats.averageCompletion = habitStats.successRate || 0;
+        
+        console.log('Profile stats updated:', this.stats);
+        console.log('Detailed breakdown:', {
+          totalPossibleDays: habitStats.totalPossibleDays,
+          totalDaysCompleted: habitStats.totalDaysCompleted,
+          successRate: habitStats.successRate
+        });
+      },
+      error: (err) => {
+        console.error('Error loading habit stats:', err);
+        // Fallback to loading individual stats
+        this.loadFallbackStats();
+      }
+    });
+
+    // Load journal stats
+    this.http.get<any>('http://localhost:3000/api/journal/stats', {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: (journalStats) => {
+        this.stats.totalJournalEntries = journalStats.totalEntries || 0;
+      },
+      error: (err) => console.error('Error loading journal stats:', err)
+    });
+
+    // Calculate days active based on user creation date
+    this.calculateDaysActive();
+  }
+
+  loadFallbackStats() {
+    const token = localStorage.getItem('token');
+    
+    // Fallback to old method if new endpoint fails
     this.http.get<any[]>('http://localhost:3000/api/habits', {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
@@ -131,16 +172,6 @@ export class ProfilePage implements OnInit {
         this.loadDetailedStats(habits);
       },
       error: (err) => console.error('Error loading habits for stats:', err)
-    });
-
-    // Load journal stats
-    this.http.get<any>('http://localhost:3000/api/journal/stats', {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: (journalStats) => {
-        this.stats.totalJournalEntries = journalStats.totalEntries;
-      },
-      error: (err) => console.error('Error loading journal stats:', err)
     });
   }
 
