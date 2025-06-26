@@ -59,7 +59,6 @@ export class CreateHabitPage {
     if (!this.target_time) return 'Select time';
     
     try {
-      // Convert 24-hour format to 12-hour format
       const time = this.target_time;
       const [hours, minutes] = time.split(':');
       const hour = parseInt(hours, 10);
@@ -68,27 +67,16 @@ export class CreateHabitPage {
       
       return `${displayHour}:${minutes} ${ampm}`;
     } catch (error) {
-      console.error('Error formatting time:', error);
       return 'Select time';
     }
   }
   createHabit() {
     if (!this.title.trim()) {
-      console.error('Habit title is required');
       return;
     }
 
     this.isCreating = true;
     const token = localStorage.getItem('token');
-    
-    console.log('Creating habit with data:', {
-      title: this.title,
-      description: this.description,
-      frequency: this.frequency,
-      target_time: this.target_time,
-      color: this.color,
-      start_date: this.start_date
-    });
     
     this.http.post<any>('http://localhost:3000/api/habits', {
       title: this.title,
@@ -103,12 +91,11 @@ export class CreateHabitPage {
     }, {
       headers: {
         Authorization: `Bearer ${token}`
-      }    }).subscribe({
+      }
+    }).subscribe({
       next: async (res) => {
-        console.log('Habit created successfully:', res);
         this.isCreating = false;
         
-        // Show success message
         const toast = await this.toastController.create({
           message: `✅ "${this.title}" habit created successfully!`,
           duration: 2000,
@@ -117,14 +104,11 @@ export class CreateHabitPage {
         });
         await toast.present();
         
-        // Navigate to habits page (Today's Habits)
         this.router.navigate(['/habits']);
       },
       error: async (err) => {
-        console.error('Error creating habit:', err);
         this.isCreating = false;
         
-        // Show error message
         const toast = await this.toastController.create({
           message: '❌ Error creating habit. Please try again.',
           duration: 3000,

@@ -14,38 +14,36 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-
-/* Enhanced Card Styles */
 .habit-card {
-  margin-bottom: 12px !important;
-  border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
-  border-left: 4px solid var(--ion-color-primary) !important;
-  transition: all 0.3s ease !important;
-  background: var(--ion-card-background) !important;
-  border: 1px solid var(--ion-item-border-color) !important;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-left: 4px solid var(--ion-color-primary);
+  transition: all 0.3s ease;
+  background: var(--ion-card-background);
+  border: 1px solid var(--ion-item-border-color);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   }
   
   &.completed {
-    border-left-color: var(--ion-color-success) !important;
+    border-left-color: var(--ion-color-success);
   }
 }
 
 .stat-card {
   text-align: center;
-  border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
-  background: var(--ion-card-background) !important;
-  border: 1px solid var(--ion-item-border-color) !important;
-  transition: all 0.3s ease !important;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  background: var(--ion-card-background);
+  border: 1px solid var(--ion-item-border-color);
+  transition: all 0.3s ease;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
   }
   
   ion-card-title {
@@ -255,28 +253,6 @@ ion-segment {
   &:focus-within {
     --border-color: var(--ion-color-primary);
     box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.2);
-  }
-}
-
-/* Specific ion-select alignment fixes */
-ion-select {
-  .select-text {
-    display: flex !important;
-    align-items: center !important;
-    min-height: 24px !important;
-    line-height: 1.5 !important;
-  }
-  
-  .select-placeholder {
-    display: flex !important;
-    align-items: center !important;
-    opacity: 0.6;
-  }
-  
-  .select-icon {
-    margin-left: auto !important;
-    display: flex !important;
-    align-items: center !important;
   }
 }
 

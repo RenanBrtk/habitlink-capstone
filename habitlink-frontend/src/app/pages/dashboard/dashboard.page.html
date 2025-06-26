@@ -1,8 +1,9 @@
-<ion-header>  <ion-toolbar color="primary">
+<ion-header>
+  <ion-toolbar color="primary">
     <ion-title>HabitLink</ion-title>
     <ion-buttons slot="end">
       <ion-avatar>
-        <div style="width: 40px; height: 40px; background: var(--ion-color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+        <div class="user-avatar">
           {{ displayName.charAt(0).toUpperCase() }}
         </div>
       </ion-avatar>
@@ -10,19 +11,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">  <!-- Greeting Section -->
-  <div class="ion-text-center" style="margin: 30px 0;">
-    <h2 style="margin: 0; font-weight: 700; color: var(--dark-gray);">
+<ion-content class="ion-padding">
+  <!-- Greeting Section -->
+  <div class="greeting-section">
+    <h2 class="greeting-title">
       {{ greeting }}, {{ displayName }}!
     </h2>
-    <p style="color: var(--medium-gray); margin: 8px 0 0 0;">Ready to build great habits today?</p>
+    <p class="greeting-subtitle">Ready to build great habits today?</p>
   </div>
   <!-- Stats Grid -->
-  <ion-grid style="margin-bottom: 20px;">
+  <ion-grid class="stats-grid">
     <ion-row>
       <ion-col size="6">
         <ion-card class="stat-card">
-          <ion-card-header style="padding: 16px 12px;">
+          <ion-card-header class="stat-header">
             <ion-card-title>{{ stats.currentStreak }}</ion-card-title>
             <ion-card-subtitle>Avg Current Streak</ion-card-subtitle>
           </ion-card-header>

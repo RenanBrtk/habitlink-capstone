@@ -228,3 +228,41 @@
     opacity: 1;
   }
 }
+
+// User avatar styling
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background: var(--ion-color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+// Greeting section styling
+.greeting-section {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.greeting-title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--dark-gray);
+}
+
+.greeting-subtitle {
+  color: var(--medium-gray);
+  margin: 8px 0 0 0;
+}
+
+.stats-grid {
+  margin-bottom: 20px;
+}
+
+.stat-header {
+  padding: 16px 12px;
+}
